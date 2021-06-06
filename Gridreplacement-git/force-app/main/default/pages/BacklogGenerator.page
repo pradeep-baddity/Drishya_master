@@ -1,0 +1,15 @@
+<apex:page standardController="Backlog__c" extensions="BacklogGeneratorController" recordSetVar="backlogs" action="{!InsertNewBacklogsAndRedirect}" sidebar="false">
+
+	<apex:sectionHeader title="Opportunity: {!opp.Name}" subtitle="Backlog Generator"></apex:sectionHeader>
+	
+	<apex:form >
+		<apex:pageBlock >
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!GoBack}" value="Go Back"></apex:commandButton>
+				<apex:commandButton action="{!GoToBacklogManager}" value="Manage Existing Backlog"></apex:commandButton>
+			</apex:pageBlockButtons>
+			<apex:pageMessages escape="false"></apex:pageMessages>
+		</apex:pageBlock>
+	</apex:form>	
+
+</apex:page>

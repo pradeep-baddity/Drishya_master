@@ -1,0 +1,18 @@
+.THIS.slds-spinner_container {
+  z-index: 10000;
+  position: fixed;
+   
+}
+.THIS .slds-button_neutral{
+	border:none !important;
+    background-color: transparent;
+}
+.THIS .slds-button_icon-bare{
+    display: none;
+}
+.THIS .slds-grid_align-end{
+    justify-content: flex-start;
+}
+.THIS .slds-form-element__label{
+    font-size: .90rem;
+}

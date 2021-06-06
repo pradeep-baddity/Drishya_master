@@ -1,0 +1,10 @@
+.THIS .slds-modal__container {
+	max-width: 100% !important;
+	width: 100% !important;
+}
+.THIS .postion{
+    position : sticky;
+}
+.THIS .slds-datepicker{
+    min-width:max-content;
+}

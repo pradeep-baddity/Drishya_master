@@ -1,0 +1,3 @@
+<apex:page standardController="Opportunity" showHeader="false"  >
+<apex:iframe width="100%" height="225" src="https://www.saleswebserver.net/sfdc/MillerHeiman5/dashboard.aspx?SessionID={!$Api.Session_ID}&EndPoint={!$Api.Partner_Server_URL_240}&ID={!Opportunity.Id}&ReturnURL={!URLFOR($Action.Opportunity.View, opportunity.id)}"/>
+</apex:page>

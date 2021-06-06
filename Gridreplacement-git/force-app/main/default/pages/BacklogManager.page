@@ -1,0 +1,273 @@
+<apex:page standardController="Backlog__c" extensions="BacklogManagerControllerExt" recordSetVar="backlogsdfgdfg">
+
+    <style>
+        .spacerdiv { height:40px; }
+        .leftpanel, .rightpanel { width:50%; }
+        .leftpanel { padding-right:10px; }
+        .rightpanel { padding-left:10px; }
+        .detailLabel { white-space: nowrap !important; }
+        #projectionSection .pbSubheader { margin-top: 0px; }
+        <!-- Data Table Footer -->
+        .footer-col-left { 
+            width:33%;  
+            padding-left: 0 !important;
+            text-align:left; 
+            vertical-align:middle !important;
+            
+        }
+        .footer-col-mid { 
+            margin:auto; display:table; 
+        }
+        .footer-col-right { 
+            width:33%;  
+            padding-right:0px !important;
+            text-align:right; 
+            vertical-align:middle !important;
+        }
+        <!--  Apex footer facet generated TD that spans all columns -->
+        tfoot > tr > td { 
+            background: #f2f3f3;
+            border-top: 2px solid #ccc !important; 
+            padding: 0px !important; 
+        }
+        <!--  Any user placed TDs inside apex footer facet-->
+        tfoot > tr > td td { 
+            border: 0 !important;
+            padding-top:0 !important;
+            padding-bottom:0 !important;
+        }
+        .paging-nav-col span, .paging-nav-col a {
+            white-space:nowrap;
+        }
+        
+    </style>
+    <h1></h1>
+    <apex:sectionHeader title="{!Opportunity.Name}" subtitle="Backlog Manager"/>
+    <p>You are editing backlogs on opportunity: <strong><apex:outputLink value="/{!Opportunity.Id}">{!Opportunity.Name}</apex:outputLink></strong></p>
+    <apex:pageMessages escape="false" id="pgMsgMain"></apex:pageMessages>
+
+    <apex:form >
+        <apex:pageBlock title="Controls" id="TopBlock">
+            
+            <apex:outputPanel id="refresh" rendered="true">
+ <apex:outputPanel id="refresh1" rendered="{!refresh}">
+  <script>
+   window.top.location='/apex/BacklogManager?scontrolCaching=1&id={!Opportunity.id}';
+  </script>
+ </apex:outputPanel>
+</apex:outputPanel>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Cancel" action="{!cancel}"></apex:commandButton>
+                <apex:commandButton value="Update Start/Duration"  onclick="if(!confirm('Are you sure?')){return};" action="{!SyncronizeNewProjections}" rendered="{!(HasBacklogs)}" reRender="TopBlock, BottomBlock, pgMsgMain" ></apex:commandButton>
+                <apex:commandButton value="Update Opportunity Amount" onclick="if(!confirm('Are you sure?')){return};" action="{!updateamount}" rendered="{!AND(or(opportunity.Amount_vs_Backlog_Roll_up__c>1, opportunity.Amount_vs_Backlog_Roll_up__c<-1), Opportunity.IsClosed ==false)}" reRender="TopBlock, BottomBlock, pgMsgMain"></apex:commandButton>
+            </apex:pageBlockButtons>
+           <apex:outputPanel rendered="{!AND(or(opportunity.Amount_vs_Backlog_Roll_up__c>1, opportunity.Amount_vs_Backlog_Roll_up__c<-1), Opportunity.IsClosed ==false)}">
+    <center><font size="3" color="red"><b><apex:outputText value="Opportunity Amount is different than 'Actuals + Projected' fees, please update your opportunity amount, or adjust your projected fees"/></b></font></center>
+</apex:outputPanel>
+            <apex:pageMessage title="{!TopBlockMessageBinder.Title}" severity="{!TopBlockMessageBinder.Severity}" strength="3" escape="false"
+                                summary="{!TopBlockMessageBinder.Message}"  rendered="{!TopBlockMessageBinder.Show}">
+            </apex:pageMessage>
+            
+            
+            <apex:panelGrid columns="2" columnClasses="leftpanel, rightpanel" width="100%" id="panel">
+            
+                
+                <!-- LEFT COLUMN -->
+                <apex:panelGroup >
+                    <apex:pageBlockSection title="Backlog Detail" columns="1" collapsible="false" > 
+                        
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="Account Name" for="accountName" />
+                            <apex:outputField value="{!Opportunity.Account.Name}" id="AccountName" />
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Client_Name__c.Label}" for="clientName" />
+                            <apex:outputField value="{!Opportunity.Client_Name__c}" id="clientName" />
+                        </apex:pageBlockSectionItem>
+
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel"> 
+                            <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Engagement_Name__c.Label}" for="engName" />
+                            <apex:outputField value="{!Opportunity.Engagement_Name__c}" id="engName" />
+                        </apex:pageBlockSectionItem>
+    
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel"> 
+                            <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Engagement_Number__c.Label}" for="engNumber" />
+                            <apex:outputField value="{!Opportunity.Engagement_Number__c}" id="engNumber" />
+                        </apex:pageBlockSectionItem>
+                       
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Estimated_Start_Date__c.Label}" for="left_eststart"></apex:outputLabel>
+                            <apex:outputField value="{!Opportunity.Estimated_Start_Date__c}" id="left_eststart"></apex:outputField>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Estimated_Duration__c.Label}" for="left_estdur"></apex:outputLabel>
+                            <apex:outputField value="{!Opportunity.Estimated_Duration__c}" id="left_estdur"></apex:outputField>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Spread_Fees_Evenly__c.Label}" for="feeSpread"></apex:outputLabel>
+                            <apex:outputField value="{!Opportunity.Spread_Fees_Evenly__c}" id="feeSpread"></apex:outputField>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="Opportunity Amount" for="Amt"></apex:outputLabel>
+                            <apex:outputField value="{!Opportunity.Amount}" id="Amt"></apex:outputField>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Current_Contract_Amount__c.Label}" for="CtAmt"></apex:outputLabel>
+                            <apex:outputField value="{!Opportunity.Current_Contract_Amount__c}" id="CtAmt"></apex:outputField>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="Estimated Opportunity Close Date" for="closeDate"></apex:outputLabel>
+                            <apex:outputField value="{!Opportunity.CloseDate}" id="closeDate"></apex:outputField>
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                            <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Actuals_with_Projected__c.Label}" for="actWithProj"></apex:outputLabel>
+                            <apex:outputField value="{!Opportunity.Actuals_with_Projected__c}" id="actWithProj"></apex:outputField>
+                        </apex:pageBlockSectionItem>
+                        
+                    </apex:pageBlockSection>
+                </apex:panelGroup>
+                
+                <!--  RIGHT COLUMN -->
+                <apex:panelGroup >
+
+                    <!--  Edit mode -->
+                    <apex:panelGroup layout="block" rendered="true">
+                        <div id="projectionSection">
+                            <apex:pageBlockSection title="Engagement Projections" columns="1" collapsible="false">
+                                <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                                    <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Estimated_Start_Date__c.Label}" for="right_eststart"></apex:outputLabel>
+                                    <apex:inputField value="{!Opportunity.Estimated_Start_Date__c}" id="right_eststart"></apex:inputField>
+                                </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem labelStyleClass="detailLabel" rendered="{!AND(or(opportunity.Amount_vs_Backlog_Roll_up__c>1, opportunity.Amount_vs_Backlog_Roll_up__c<-1), Opportunity.IsClosed ==false)}">
+                                    <apex:outputLabel value="Opportunity Amount" for="right_amt"></apex:outputLabel>
+                                    <apex:inputField value="{!Opportunity.Amount}" id="right_amt"></apex:inputField>
+                                </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                                    <apex:outputLabel value="{!$ObjectType.Opportunity.Fields.Estimated_Duration__c.Label}" for="right_estdur"></apex:outputLabel>
+                                    <apex:inputField value="{!Opportunity.Estimated_Duration__c}" id="right_estdur"></apex:inputField>
+                                </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem labelStyleClass="detailLabel">
+                                    <apex:outputLabel value="Respread fees" for="right_respreadFees"></apex:outputLabel>
+                                    <apex:inputCheckbox value="{!RespreadFees}" id="right_respreadFees"></apex:inputCheckbox>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                        </div>
+                    </apex:panelGroup> 
+                    
+                </apex:panelGroup>
+            </apex:panelGrid>
+        </apex:pageBlock>
+    </apex:form>
+    
+    <div class="spacerdiv"></div>
+    
+    <apex:form >
+        <apex:pageBlock title="Backlog Table" id="BottomBlock">
+
+            <apex:pageBlockButtons rendered="true">
+                <apex:commandButton value="Regenerate" action="{!Regenerate}" rendered="{!hasBacklogs == false}" reRender="TopBlock,BottomBlock,pgMsgMain" ></apex:commandButton>
+                <apex:commandButton value="Save Changes" onclick="if(!confirm('Are you sure?')){return};" action="{!SaveChanges}"  rendered="{!hasBacklogs}" reRender="TopBlock,BottomBlock,pgMsgMain" ></apex:commandButton>
+            </apex:pageBlockButtons>
+            
+            <apex:pageMessage title="{!BottomBlockMessageBinder.Title}" severity="{!BottomBlockMessageBinder.Severity}" strength="3" escape="false"
+                                summary="{!BottomBlockMessageBinder.Message}"  rendered="{!BottomBlockMessageBinder.Show}">
+            </apex:pageMessage>
+            
+            
+
+            <apex:pageBlockSection columns="1" title="Data" collapsible="false">    
+                
+                <apex:outputText rendered="{!NOT(HasBacklogs)}">No backlog records to display.</apex:outputText>
+
+                <apex:outputText rendered="{!HasBacklogs}">
+                    <apex:outputLabel value="Display " for="PageSizeSelector"></apex:outputLabel>
+                    
+                    <apex:selectList value="{!PageSize}" size="1" id="PageSizeSelector">
+                        <apex:selectOption itemValue="12" itemLabel="12 rows"/>
+                        <apex:selectOption itemValue="24" itemLabel="24 rows"/>
+                        <apex:selectOption itemValue="36" itemLabel="36 rows"/>
+                        <apex:selectOption itemValue="48" itemLabel="48 rows"/>
+                        
+                        <apex:actionSupport event="onchange" action="{!DoNothing}" reRender="BottomBlock,pgMsgMain" />
+                    </apex:selectList> 
+                    
+                    <apex:outputLabel value=" per page" for="PageSizeSelector"></apex:outputLabel>
+                </apex:outputText>
+                
+                <apex:pageBlockTable value="{!BacklogSet}" var="set" rendered="{!HasBacklogs}" style="margin-top:10px;">
+                    <apex:column headerValue="Name">
+                        <apex:outputLink value="/{!set.Id}">{!set.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{!set.Opportunity__c}"/> 
+                    <apex:column value="{!set.Date__c}"/>
+                    <apex:column value="{!set.Type__c}"/>
+                    <apex:column headerValue="{!$ObjectType.Backlog__c.Fields.Projected_Amount__c.Label}" rendered="true">
+                        <apex:inputField value="{!set.Projected_Amount__c}" rendered="{!set.Has_Actuals__c == false}"></apex:inputField>
+                        <apex:outputField value="{!set.Projected_Amount__c}" rendered="{!set.Has_Actuals__c == true}"></apex:outputField>
+                    </apex:column>
+                    <apex:column value="{!set.Actual_Amount__c}"></apex:column>
+                    
+                    <!--  Footer navigation row -->
+                    <apex:facet name="footer">
+                        <apex:panelGrid columns="3" width="100%" columnClasses="footer-col-left, footer-col-mid, footer-col-right">
+                            <apex:panelGroup >
+                                {!FirstRecOnPage}-{!LastRecOnPage} of {!NumRecs}
+                            </apex:panelGroup>
+                            <apex:panelGroup >
+                                <apex:panelGrid columns="5" columnClasses="paging-nav-col">
+                                    <apex:panelGroup >
+                                        <apex:commandLink value="<<" rendered="{!HasPrev}" action="{!GoToFirst}" reRender="BottomBlock,pgMsgMain" />
+                                        <apex:outputText value="<<" rendered="{!NOT(HasPrev)}" style="color:#a8a8a8;"></apex:outputText>
+                                    </apex:panelGroup>
+                                    <apex:panelGroup >
+                                        <apex:commandLink value="< Previous" rendered="{!HasPrev}" action="{!GoToPrevious}" reRender="BottomBlock,pgMsgMain" />
+                                        <apex:outputText value="< Previous" rendered="{!NOT(HasPrev)}" style="color:#a8a8a8;"></apex:outputText>
+                                    </apex:panelGroup>
+                                    <apex:panelGroup >
+                                    </apex:panelGroup>
+                                    <apex:panelGroup >
+                                        <apex:commandLink value="Next >" rendered="{!HasNext}" action="{!GoToNext}" reRender="BottomBlock,pgMsgMain" />
+                                        <apex:outputText value="Next >" rendered="{!NOT(HasNext)}" style="color:#a8a8a8;"></apex:outputText>
+                                    </apex:panelGroup>
+                                    <apex:panelGroup >
+                                        <apex:commandLink value=">>" rendered="{!HasNext}" action="{!GoToLast}" reRender="BottomBlock,pgMsgMain" />
+                                        <apex:outputText value=">>" rendered="{!NOT(HasNext)}" style="color:#a8a8a8;"></apex:outputText>
+                                    </apex:panelGroup>
+                                </apex:panelGrid>
+                            </apex:panelGroup>
+                            <apex:panelGroup >
+                                Page&nbsp;
+                                
+                                <apex:inputText value="{!PageNum}" maxlength="2" size="2" style="text-align:center;"> 
+                                    <apex:actionSupport event="onchange" action="{!DoNothing}" reRender="BottomBlock,pgMsgMain" />
+                                </apex:inputText>
+                                
+                                of <strong>{!NumPages}</strong>
+                            </apex:panelGroup>
+                        </apex:panelGrid>
+                        
+                    </apex:facet>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            
+            
+            
+        </apex:pageBlock>
+    </apex:form>
+    
+    
+    <script>
+        <!--  Prevent datepicker from popping up on page load -->
+        function setFocusOnLoad() {}
+    </script>
+</apex:page>

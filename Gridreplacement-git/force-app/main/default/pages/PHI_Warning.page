@@ -1,0 +1,8 @@
+<apex:page standardController="Case">
+    <style>
+         .bPageBlock {
+                    background-color: white;
+         }
+    </style>
+     <font size="3" color="red"><b>Please refrain from adding PHI or attaching files that contain PHI to any case. Contact Huron for alternate methods for communicating PHI</b></font>
+</apex:page>

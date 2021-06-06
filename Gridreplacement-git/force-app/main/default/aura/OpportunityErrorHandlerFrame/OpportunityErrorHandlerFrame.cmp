@@ -1,0 +1,96 @@
+<aura:component controller="OpportunityValidationErrorHandler" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute type="Opportunity" name="OpportunityRecord" />
+    <aura:attribute type="String[]" name="RequiredFields" />
+    <aura:attribute type="String" name="field" />
+    <aura:attribute type="Boolean" name="isDataValid" default="false" />
+    <aura:attribute type="List" name="orequiredFields" />
+    <aura:attribute type="Boolean" name="isClosed" default="true" />
+    <aura:attribute name="fieldValidator" type="Map"  />
+    <aura:attribute name="saveButtonDisable" type="Boolean" default="true" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="RecordTypeID" type="Id" />
+    
+    <lightning:quickActionAPI aura:id="quickActionAPI" />
+    
+    
+    <aura:attribute name="OpportunityRec" type="Opportunity" 
+                    default="{ 'sobjectType': 'Opportunity','Name':'' }"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="force:refreshView" action="{!c.refreshHandler}"/>
+    <aura:attribute name="recordLoadError" type="String"/>
+    
+    <div>
+    <force:recordData aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        fields="Name"
+        targetFields="{!v.OpportunityRecord}"
+        targetError="{!v.recordLoadError}"
+        recordUpdated="{!c.refreshHandler}"/> 
+        
+    <aura:if isTrue="{!and(v.isClosed, not(empty(v.orequiredFields)))}">
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Required Fields Are Missing </h2>
+                    </header>
+                    <aura:if isTrue="{!v.showSpinner}">
+                        <lightning:spinner  variant="brand" />
+                    </aura:if>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:recordEditForm aura:id="recordEditForm"
+                                                  recordId="{!v.recordId}"
+                                                  recordTypeId="{!v.RecordTypeID}"
+                                                  objectApiName="Opportunity"
+                                                  onsuccess="{!c.handleSuccess}"
+                                                  onerror="{!c.handleError}"
+                                                  onsubmit="{!c.handleSubmit}">
+                           
+                                
+                            <lightning:messages />
+                            
+                            <ui:message aura:id="errorIDCompetitor" class="slds-hide" severity="error" >
+			                             Please Specify Competitor 
+	                        </ui:message>
+                            <ui:message aura:id="errorIDEDU" class="slds-hide" severity="error" >
+			                            The Estimated Engagement Start Date must be greater than or equal to the Estimated Opportunity Close Date
+	                        </ui:message>
+                            <ui:message aura:id="errorID" class="slds-hide" severity="error" >
+                               The Estimated Engagement Start Date must be greater than or equal to the Estimated Opportunity Close Date
+	                        </ui:message>
+                            <ui:message aura:id="errorIDreasonLost" class="slds-hide" severity="error" >
+			                             Please Specify Lost Reason
+	                        </ui:message>
+                            <ui:message aura:id="errorIDreasonWon" class="slds-hide" severity="error" >
+			                             Please Specify Reason Won
+	                        </ui:message>
+                            <ui:message aura:id="errorIDGeneral" class="slds-hide" severity="error" >
+                                Please Provide Values For All Fields.
+	                        </ui:message>
+                            
+                            <aura:iteration items="{!v.orequiredFields}" var="field">
+                                <lightning:inputField fieldName="{!field}"  onchange="{!c.handleFieldChange}" /> 
+                            </aura:iteration>
+                            <div  class="slds-float_left">
+                            <lightning:button variant="brand" label="Add Offerings" title="Add Offerings"  class="slds-m-top_medium" onclick="{! c.callCustomAddOfferingQuickAction }"/></div>
+                            
+                            <div class="slds-float_right ">
+                                <lightning:button variant="destructive" label="Cancel" class="slds-m-top_medium" onclick="{! c.handleCancelClick }" />
+                                <lightning:button aura:id="submit" variant="success" type="submit" disabled="{!v.saveButtonDisable}" label="Update Record" class="slds-m-top_medium" />
+                            </div>
+                            
+                        </lightning:recordEditForm> 
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        </aura:if>
+   <!-- </div> -->
+    </div>
+    
+</aura:component>

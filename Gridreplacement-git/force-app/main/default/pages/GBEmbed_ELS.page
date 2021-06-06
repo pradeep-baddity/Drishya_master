@@ -1,0 +1,9 @@
+<apex:page standardController="Opportunity" sidebar="false" showHeader="false">
+	<apex:tabPanel switchType="client" selectedTab="tabDetails" tabClass="activeTab" inactiveTabClass="inactiveTab">
+		<apex:tab label="ELS">
+			<apex:variable var="gridPage" value="{!URLFOR($Page.GBLite__Grid)}" />
+			<apex:variable var="gridPage" value="{!gridPage & IF(CONTAINS(gridPage, '?'), '&', '?')}" />
+			<iframe id="gridFrame" scrolling="auto" height="480" width="100%" frameborder="0" src="{!gridPage}gname=ELS&id={!Opportunity.Id}&sbb=1&sh=0&ssb=0"></iframe>
+		</apex:tab>
+	</apex:tabPanel>
+</apex:page>

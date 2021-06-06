@@ -1,0 +1,136 @@
+<apex:page standardController="Opportunity" extensions="BacklogChangerController" recordSetVar="backlogs">
+    <apex:form >
+        <apex:outputPanel rendered="{!refreshPage}">
+   <script>
+      window.top.location='/{!opportunity.id}';
+   </script>
+</apex:outputPanel>
+    
+    <!--Click Multi Business Rules    -->
+    
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MkANIA0',true,false)}">
+    <br></br>
+    <br></br>
+    <ul style="list-style-type:square">
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Won' a Sales Credit must be created and the 'Reason Won' field must be populated."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Lost (0%)' the 'Reason Lost' and 'Lost to Competitor' fields must be populated as well as 'Other Reason Lost' value if applicable."/></b></font></li>
+    </ul>
+    </apex:outputPanel>
+    
+    
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MXb6IAG',true,false)}" >
+    <br></br>
+    <br></br>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="A Backlog must be created BEFORE saving an Opportunity with a 'Probability (%)' greater than '74%'."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Won' a Sales Credit must be submitted and the 'Reason Won' field must be populated."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Lost (0%)' the 'Reason Lost' and 'Lost to Competitor' fields must be populated as well as 'Other Reason Lost' value if applicable."/></b></font></li>
+    <!--<li><font size="3" color="red"><b><apex:outputText value=/></b></font></li>-->
+</apex:outputPanel>
+
+    <!--ELS Business Rules -->
+    
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MXb1IAG',true,false)}" >
+    <br></br>
+    <br></br>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="A Backlog must be created BEFORE saving an Opportunity with a 'Probability (%)' greater than '74%'."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Won' a Sales Credit must be submitted and the 'Reason Won' field must be populated."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to saving an Opportunity in the 'Closed Lost' stage, the 'Reason Lost' and 'Lost to Competitor' fields must be populated as well as 'Other Reason Lost' value if applicable."/></b></font></li>
+</apex:outputPanel>
+    
+    <!--EPM Multi Business Rules -->
+    
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MXbGIAW',true,false)}">
+    <br></br>
+    <br></br>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Lost' the 'Lost to Competitor' field must be populated as well as 'Other Reason Lost' value if applicable."/></b></font></li>
+ </apex:outputPanel>
+    
+     <!--EPM Single Business Rules -->   
+        
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MfhrIAC',true,false)}" >
+    <br></br>
+    <br></br>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="An 'Estimated Duration' and 'Estimated Engagement Start Date' must be entered BEFORE saving an Opportunity with a 'Probability (%)' greater than '29%'."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Won', the Sales Credit percentage for 'Originator' and 'Sales Team' must be at '100%' and Submitted for Approval"/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Lost' the 'Lost to Competitor' field must be populated as well as 'Other Reason Lost' value if applicable."/></b></font></li>
+</apex:outputPanel>
+
+    <!-- HBA Business Rules -->
+    
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MdaqIAC',true,false)}" >
+    <br></br>
+    <br></br>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="A Backlog must be created BEFORE saving an Opportunity with a 'Probability (%)' greater than '74%'."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Lost' the 'Reason Lost' and 'Lost to Competitor' fields must be populated as well as 'Other Reason Lost' value if applicable."/></b></font></li>
+</apex:outputPanel>
+    
+    <!-- HC Multi Business Rules 
+    
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MdasIAC',true,false)}">
+    <br></br>
+    <br></br>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="When the value for 'Lead Source' is 'Business Advisor', the 'HC Business Advisor' field must be populated."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="The Probability (%) for a stage of 'Opportunity Exploration (0% - 50%)' may not exceed '50%' and the Probability (%) for a stage of 'Opportunity Assessment (0%-80%)' may not exceed '80%'."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Won', the 'Signed Contract?' field must be 'checked' and the Sales Credit percentage for 'Originator' and 'Sales Team' must be at '100%' and Submitted for Approval."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Lost' the 'Reason Lost' field must be populated as well as 'Other Reason Lost' value  if applicable."/></b></font></li>
+</apex:outputPanel>
+        
+    <!-- HC Single Business Rules
+        
+    
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MdatIAC',true,false)}" >
+    <br></br>
+    <br></br>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="When the value for 'Lead Source' is 'Business Advisor', the 'HC Business Advisor' field must be populated."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="The Probability (%) for a stage of 'Opportunity Exploration (0% - 50%)' may not exceed '50%' and the Probability (%) for a stage of 'Opportunity Assessment (0%-80%)' may not exceed '80%'."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="A Backlog must be created BEFORE saving an Opportunity with a 'Stage' of Opportunity Assessment (0%-80%) or higher."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Won', the 'Signed Contract?' field must be 'checked' and the Sales Credit percentage for 'Originator' and 'Sales Team' must be at '100%' and Submitted for Approval."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Lost' the 'Reason Lost' field must be populated as well as 'Other Reason Lost' value  if applicable."/></b></font></li>
+</apex:outputPanel>
+
+    <!-- Legal Business Rules -->
+    
+<apex:outputPanel rendered="{!IF(Opportunity.RecordTypeId=='012U0000000MdauIAC',true,false)}" >
+    <br></br>
+    <br></br>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="A Backlog and Sales Credit must be created BEFORE saving an Opportunity with a 'Probability (%)' greater than or equal to'75%'."/></b></font></li>
+    <li><font size="2" color="#002e63"><b><apex:outputText value="Prior to closing an Opportunity as 'Closed Lost' the 'Reason Lost' and 'Lost to Competitor' fields must be populated as well as 'Other Reason Lost' value if applicable."/></b></font></li>
+</apex:outputPanel>
+    
+<br></br>
+    <br></br>
+        
+<apex:pageBlock mode="maindetail" id="Buttons" rendered="{!(Opportunity.Backlog_Fields_Check__c == true) && (Opportunity.IsClosed ==false) && !(HasBacklogs == false) && (Opportunity.RecordTypeId <>'012U0000000Mfhr') && (Opportunity.type <>'Renewal Opportunity' && Opportunity.RecordTypeId <> '012U0000000MXb1')}">
+    
+    
+<apex:outputPanel id="refresh" rendered="true">
+ <apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+  <script>
+   window.top.location='/{!Opportunity.id}';
+  </script>
+ </apex:outputPanel>
+</apex:outputPanel>
+    <center><font size="3" color="red"><b><apex:outputText value="Changes to Opportunity might affect your Backlog.  Please select one of the options below (Please scroll down if you are not able to see the links):"/></b></font></center>
+    <br></br>
+    <br></br>
+
+    <style type="text/css">
+  a:link, a:visited {
+  color: red;
+  }
+  ...
+</style>
+
+
+<apex:pageBlockButtons location="Bottom">
+                <apex:commandLink action="{!SyncronizeNewProjections}" value="Auto-respread fees" rendered="{!(HasBacklogs)}"  style="text-decoration:underlined;padding:4px;font-size:130%"/>&nbsp;&nbsp;
+                
+                <p1 style="font-size:130%"><apex:outputField value="{!Opportunity.Backlog_link__c}" id="CtAmt"></apex:outputField></p1>&nbsp;&nbsp;
+                <apex:commandLink action="{!cancelando}" value="Create Reminder Task" rendered="{!(HasBacklogs)}" style="text-decoration:underlined;padding:4px;font-size:130%"/>
+</apex:pageBlockButtons>
+                
+           
+        </apex:pageBlock>
+</apex:form>
+    
+</apex:page>

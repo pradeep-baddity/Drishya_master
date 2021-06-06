@@ -1,0 +1,15 @@
+.THIS .slds-modal__container{
+    max-width: 40rem !important;
+    width:50% !important;
+  }
+.THIS .slds-modal__footer {
+   background-color: transparent;
+}
+.THIS .slds-modal__content{
+    overflow: initial;
+}
+.THIS .slds-spinner_container  {
+    background-color: rgba(0, 0, 0, 0.20);
+    margin-top: 180px;
+    margin-bottom: 180px; 
+}

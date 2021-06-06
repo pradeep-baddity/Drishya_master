@@ -1,0 +1,16 @@
+<aura:component >
+    <aura:attribute name="singleProduct" type="opportunitylineitem" />
+    <tr>
+        <td>
+            {!v.singleProduct.ApexProductName__c}
+        </td>
+        <td>
+            <lightning:recordEditForm
+                                      objectApiName="OpportunityLineItem">
+                <div class="slds-table slds-table--bordered slds-table--cell-buffer slds-table_fixed-layout">
+                    <lightning:input aura:id="UnitPrice" fieldName="UnitPrice" type="number" value="{!v.singleProduct.UnitPrice}" variant="label-hidden" onchange="{!c.convertAmountSI}" default = "0" /> 
+                </div>
+            </lightning:recordEditForm>
+        </td>
+    </tr> 
+</aura:component>

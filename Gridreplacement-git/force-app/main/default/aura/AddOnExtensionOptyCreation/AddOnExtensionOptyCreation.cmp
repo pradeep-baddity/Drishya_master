@@ -1,0 +1,188 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" controller="HC_CreateUpsellOrExtentionOpty" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="OLI" type="Object" />	
+    <aura:attribute name="IsLoading" type="Boolean" default="true" />
+    <aura:attribute name="OLIList" type="List" />
+    <aura:attribute name="selectedOLIs" type="List" default="[]"/>
+    <aura:attribute name="errors" type="Object" default="[]"/>
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="optyType" type="String"/>
+    <aura:attribute name="opportunityName" type="String"/>
+    <aura:attribute name="estdDate" type="Date"/>
+    <aura:attribute name="InitiateRenewal" type="Date"/>
+    <aura:attribute name="EOCD" type="Date" description="Estimated Opportunity Close Date"/>
+    <aura:attribute name="duration" type="decimal"/>
+    <aura:attribute name="saveButtonDisable" type="boolean" default="false" />
+    <aura:attribute name="OpportunityRec" type="Opportunity" default="{ 'sobjectType': 'Opportunity','Name':'','Type':'' }"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    
+    <!--To maintain the modal size-->
+    <aura:unescapedHtml value="{!v.cssStyle}"/>
+    
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:auto !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+        .slds-modal__container{ 
+        max-width: 90rem; 
+        width:90%;
+        } 
+    </aura:html>
+    
+    <div class="slds-col modal-header slds-modal__header">
+        <h2 class="title slds-text-heading--medium">Create Related Opportunity</h2>
+    </div>
+    <div class="modal-body scrollable slds-modal__content slds-p-around--medium">
+        <aura:if isTrue="{! v.showError}">
+            <div class="customErrorMessageContainer">You Cannot Split This Opportunity</div>
+        </aura:if>
+        
+        <div style="height: 300px">
+            <aura:if isTrue="{!v.IsLoading}">
+                <div style="width:20%;">
+                    <lightning:spinner variant="brand" size="small"/>
+                </div>
+                
+                
+                <aura:set attribute="else"> 
+                    
+                    <table class="slds-table"><br/>
+                        <tr>
+                            <td><ui:outputText value="Opportunity Name "/></td>
+                            <td><lightning:input class="marginTop" type="text" name="input2" required="true" value="{!v.opportunityName}" /></td>
+                        </tr> <br/>
+                        
+                        <tr>
+                            <td><ui:outputText value="Opportunity Type :"/></td>
+                            <td>
+                                <lightning:select class="marginTop"	 name="select1" required="true" value="{!v.optyType}" >
+                                    <option value="">--None--</option>
+                                    <option value="AddOn/UpSell">AddOn/UpSell</option>
+                                    <option value="Extension Opportunity">Extension</option>
+                                    <option value="Renewal Opportunity">Renewal</option>                                     </lightning:select>
+                            </td>
+                            <td><ui:outputText value="Duration :"/></td>
+                            <td><lightning:input class="marginTop" type="number" name="input2" required="true" value="{!v.duration}" /></td>
+                           
+                        </tr>
+                        <tr>
+                            <td><ui:outputText value="Estimated Opportunity Close Date :"/></td>
+                            <td><lightning:input type="Date" name="input2" required="true" value="{!v.EOCD}" /></td>
+                        </tr> <br/>
+                        <tr>
+                         <!--   <aura:if isTrue="{!v.optyType == 'AddOn/UpSell'}">
+                                <td><ui:outputText value="Estd. Start Date :"/></td>
+                                <td><lightning:input class="marginTop" type="date" name="input1" required="true" value="{!v.estdDate}" /></td>
+                                
+                            </aura:if>  -->
+                            <!--if Opportunity type Renewal Logic Added by Tapas Tulo-->
+                            <aura:if isTrue="{!v.optyType == 'Renewal Opportunity'}">
+                                <td><ui:outputText value="Initiate Renewal Notice :"/></td>
+                                <td><lightning:input class="marginTop" type="date" name="input1" required="true" value="{!v.InitiateRenewal}" /></td>
+                                
+                            </aura:if> 
+                        </tr>
+                    </table>
+                     <ltng:require styles="{!$Resource.ModalWidthCSS}"/>
+
+<div class="slds-scrollable" style="height:15rem;width:90rem">
+     <div class="slds-text-longform" style="width:100%">
+
+         
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered" style="width:100%;">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col" style="width:2%">
+                                        <div class="slds-truncate" title="Selection"></div>
+                                    </th>
+                                    <th class="" scope="col" style="width:2%">
+                                        <div class="slds-truncate" title="Offering Name">Offering Name</div>
+                                    </th>
+                                    <th class="" scope="col" style="width:2%">
+                                        <div class="slds-truncate" title="Expertise">Expertise</div>
+                                    </th>
+                                    <th class="" scope="col" style="width:2%">
+                                        <div class="slds-truncate" title="Capability">Capability</div>
+                                    </th>
+                                    <th class="" scope="col" style="width:2%">
+                                             <div class="slds-truncate" title="Service">Service</div>
+                                         </th>
+                                    <th class="" scope="col" style="width:2%">
+                                             <div class="slds-truncate" title="Technology Vendor">Technology Vendor</div>
+                                         </th>
+                                    <th class="" scope="col" style="width:2%">
+                                             <div class="slds-truncate" title="Technology Capability">Technology Capability</div>
+                                         </th>
+                                    <th class="" scope="col" style="width:2%">
+                                             <div class="slds-truncate" title="Technology Module">Technology Module</div>
+                                         </th>
+                                    <th class="" scope="col" style="width:2%">
+                                        <div class="slds-truncate" title="Price"> Sales Price</div>
+                                    </th> 
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.OLI}" var="item">
+                                    <tr class="slds-hint-parent">
+                                        <td data-label="Selection" style="width:2%">
+                                            <ui:inputCheckbox aura:id="checkbox"  value="{!item.isSelected}" change="{!c.getSelectedRows}"/>
+                                        </td>
+                                        <td data-label="Offering Name" style="width:2%">
+                                            <div class="slds-truncate" >{!item.offeringName}</div>
+                                        </td>
+                                        <td data-label="Expertise" style="width:2%">
+                                            <div class="slds-truncate" >{!item.Expertise}</div>
+                                        </td>
+                                        <td data-label="Capability" style="width:2%">
+                                            <div class="slds-truncate" >{!item.Capability}</div>
+                                        </td>
+                                        <td data-label="Service" style="width:2%">
+                                            <div class="slds-truncate" >{!item.Service}</div>
+                                        </td>
+                                        <td data-label="TechnologyVendor" style="width:2%">
+                                            <div class="slds-truncate" >{!item.TechnologyVendor}</div>
+                                        </td>
+                                        <td data-label="TechnologyCapability" style="width:2%">
+                                            <div class="slds-truncate" >{!item.TechnologyCapability}</div>
+                                        </td>
+                                        <td data-label="TechnologyModule" style="width:2%">
+                                            <div class="slds-truncate" >{!item.TechnologyModule}</div>
+                                        </td>
+                                        
+                                        <td data-label="Price" style="width:2%">
+                                            <div class="slds-truncate" >
+                                                <ui:inputCurrency value="{!item.salesPrice}" required="true"/>
+                                            </div>
+                                        </td>
+                                        
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+    </div>
+        
+                    </div>
+    
+                </aura:set>
+            </aura:if>
+        </div>
+    </div>
+       
+    <div class="slds-col slds-modal__footer "> 
+        <lightning:button variant="brand" label="Save" onclick="{!c.createNewOpportunity}" disabled="{!v.saveButtonDisable}"/>
+        <lightning:button variant="brand" label="Cancel" onclick="{!c.cancelClick}"/>
+    </div> 
+    
+</aura:component>

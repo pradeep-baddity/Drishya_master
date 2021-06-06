@@ -1,0 +1,152 @@
+<aura:component implements="lightning:actionOverride,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller = "opportunitylineItemfetch">
+    
+    <!--aura handler with waiting and donewaiting events-->
+    <aura:handler name="init" value="{!this}" action="{!c.fetchoppline}"/>
+    <!--aura:handler event="aura:waiting" action="{!c.showSpinner}"/>-->
+    <!--aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>-->
+    
+    <!--component attributes -->
+    <aura:attribute type="opportunitylineitem[]" name="oppLineItemList"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="sortedDirection" type="Boolean" default="true" />
+    <aura:attribute name="toggleSpinner" type="boolean" default="false"/>
+    <aura:attribute name="ScheduleDate" type="Date"/>
+    <aura:attribute name="Revenue" type="decimal"/>
+    <aura:attribute name="Quantity" type="Integer"/>
+    <aura:attribute name="Offering" type="String"/>
+    <aura:attribute name="openModal" type="boolean" default="false"/>
+    <aura:attribute name="installments" type = "Integer"/>
+    <aura:attribute name="selectedRowid" type="String"/>
+    <aura:attribute name="numberOfInstallments" type="Integer" />
+    <aura:attribute name="openModalDelete" type="boolean" default="false"/>
+    <aura:attribute name="RefreshingBoolean" type="boolean" default="false"/>
+    
+    <!--<aura:handler event="force:refreshView" action="{!c.refreshHandler}"/> -->
+    <lightning:quickActionAPI aura:id="quickActionAPI" />
+    
+    <!--loading spinner start-->
+    <aura:if isTrue="{!v.toggleSpinner}">
+        <div class="slds-spinner_container">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if> 
+    <!--loading spinner end-->
+    <div class=""> 
+        <lightning:button variant="brand" label="Add Offerings" title="Add Offerings"  class="slds-m-top_medium" onclick="{! c.callCustomAddOfferingQuickAction }"/>
+    </div>
+    
+    
+    <!--<force:recordData aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        fields="Amount__c"
+       
+        targetFields="{!v.OpportunityRecord}"
+        targetError="{!v.recordLoadError}"
+        recordUpdated="{!c.refreshHandler}"/> --> 
+    <aura:if isTrue="{!(v.oppLineItemList.length > 0)}">
+        <lightning:datatable class="dataTableCol"
+                             data="{!v.oppLineItemList}" 
+                             recordId ="{!v.recordId}"
+                             columns="{!v.mycolumns }" 
+                             keyField="id"
+                             hideCheckboxColumn="true"
+                             onrowaction="{!c.buttonActions}"
+                             onsort="{!c.updateColumnSorting}"
+                             sortedBy="{!v.sortedBy}"
+                             sortedDirection="{!v.sortedDirection}"
+                             aura:id="lineItemDatatable"
+                             showRowNumberColumn="false"/>  
+        <aura:set attribute="else">
+            <div class="slds-align_absolute-center">No Records Found</div>
+        </aura:set>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.openModal}">
+        <div class="slds-m-around--xx-large">
+            
+            <!--Modal Box Start-->
+            <div role="dialog" class="slds-modal slds-fade-in-open ">
+                <div aura:id="MainDiv" class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.handleCloseModal}">
+                            X 
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h1 class="slds-text-heading--medium">Schedules</h1>
+                    </div>
+                    
+                    <!--Modal Box Header-->
+                    <div class="slds-page-header">
+                        <div class="slds-grid">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <p style="text-align: left" class=" slds-line-height_reset">Schedule Information </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!--aura:iteration items="{!v.scheduleValues}" var="row" indexVar="index"-->
+                    <table class="slds-table slds-table_cell-buffer slds-Ratecardtable">
+                        <tr>
+                            <td>
+                                <lightning:input type="Date" aura:id="ScheduleDate" label="Schedule Date" value="{!v.ScheduleDate}" displayDatePicker="true" required="true" format="YYYY-MM-DD"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <lightning:input type="double" aura:id="Revenue" label="Revenue" value="{!v.Revenue}" required="true"/>
+                            </td>	
+                        </tr>
+                        <tr>
+                            <td>
+                                <lightning:input type="number" aura:id = "Installments" label="Installments" value="{!v.Quantity}" required="true"/>
+                            </td>
+                        </tr>
+                    </table> 
+                    <!--/aura:iteration-->
+                    <!--Modal Box Button-->
+                    <div class="slds-modal__footer">
+                        <lightning:button variant="Neutral" label="Cancel" onclick="{!c.handleCloseModal}"/>
+                        <lightning:button variant="brand" label="Save" onclick="{!c.saveLineItem}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>            
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.openModalDelete}">
+        <div class="slds-m-around--xx-large">
+            
+            <!--Modal Box Start-->
+            <div role="dialog" class="slds-modal slds-fade-in-open ">
+                <div aura:id="MainDiv" class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.handleCloseModal}">
+                            X
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h1 class="slds-text-heading--medium">Delete Offering</h1>
+                    </div>
+                    
+                    <!--Modal Box Header-->                  
+                    <div class="modal-body scrollable slds-modal__content slds-p-around--medium">
+                        <div class="slds-text-align--center">
+                            Are you sure you want to delete this Offering?
+                        </div>
+                    </div>
+                    <!--Modal Box Button-->
+                    <div class="slds-modal__footer">
+                        <lightning:button class="slds-button slds-button--neutral uiButton forceActionButton" variant="Neutral" label="Cancel" onclick="{!c.handleCloseModal}"/>
+                        <lightning:button variant="brand" label="delete" onclick="{!c.deleteLineItem}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>            
+        </div>
+    </aura:if>
+</aura:component>

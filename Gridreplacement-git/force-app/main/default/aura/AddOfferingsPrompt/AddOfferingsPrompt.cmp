@@ -1,0 +1,86 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" controller="addOfferings">
+    <aura:attribute name="openModal" type="boolean" default="false"/>
+    <aura:attribute type="OpportunityLineItem[]" name="prodList" />
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="selectedRowsCount" type="Integer" default="0"/>
+    <aura:attribute name="selection" type="List" />
+    <aura:attribute name="searchKeyword" 	type="String" 	default='' />
+    <aura:attribute name="isNext" type="Boolean" default="true"/>
+    <aura:attribute name="isPrevious" type="Boolean" default="false"/>
+    <aura:attribute name="singleProd" 		type="Object" />
+    <aura:attribute name="multipleRows" 		type="OpportunityLineItem[]" />
+    <aura:attribute name="toSaveproductList"  type="OpportunityLineItem[]" />
+    <aura:attribute name="selectedSearchableList" type="OpportunityLineItem[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.fetchproducts}"/>
+    <aura:handler name="selectProv" event="c:selectedRows" action="{!c.handleComponentEvent}"/>
+    <div>
+        <div class="slds-modal__content slds-p-around--medium"> 
+            <aura:html tag="style">
+                .slds-modal__container{
+                height : auto;
+                width: 120%;
+                max-width: 80rem;
+                }
+                .modal-body{
+                height : 500px !important;
+                max-height: 500px !important;
+                }
+                
+                .customFooter{
+                display: inline !important;
+                }
+            </aura:html> 
+            <aura:if isTrue="{!v.isNext}">
+                <div clas = "slds-col modal-header slds-modal__header">
+                    <h2 class="slds-line-height_reset slds-align_absolute-center" style="font-size: 20px;"><b>Add Offerings</b></h2>
+                    <h1 class="slds-line-height_reset slds-align_absolute-center"><b>Price Book: Huron 2021</b></h1>
+                </div><br/>
+                <!---Search Box for International customer Group-->
+                <div class="st-default-search-input" style="width:100%">
+                    <lightning:input type="search" value="{!v.searchKeyword}"  label="Search"
+                                     variant="label-hidden" placeholder="Search Offerings..." onchange="{!c.searchKeyChange}"/>
+                </div>
+                <br/>
+                <div>
+                    <c:AddOfferingsPromptChild prodList="{!v.prodList}" OppId = "{!v.recordId}"/>
+                </div>
+                <aura:set attribute="else">
+                    <div clas = "slds-col modal-header slds-modal__header">
+                        <h2 class="slds-line-height_reset slds-align_absolute-center" style="font-size: 20px;">Edit Selected Offerings</h2>
+                        
+                    </div>
+                    <div aura:id="dataTab" class = "slds-modal__content slds-p-around--medium">
+                        <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table_fixed-layout">
+                            <thead>  
+                                <tr>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="OFFERING NAME">OFFERING NAME </div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="SALES PRICE">  SALES PRICE </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.selectedSearchableList}" var="product">
+                                    <c:AddOfferingsPromptChild2 singleProduct="{!product}"/>
+                                </aura:iteration>
+                            </tbody>
+                            
+                        </table> <br/>
+                        <footer>
+                            <div class="slds-float--right slds-col modal-footer slds-modal_footer slds-grid slds-grid_align-spread">
+                                <lightning:button variant="brand" label="Cancel" onclick="{!c.cancelClick}"/>
+                                <lightning:button variant="brand" label="Save" onclick="{!c.savelineitems}"/>
+                            </div>
+                            <div class="slds-float--left slds-col modal-footer slds-modal_footer slds-grid slds-grid_align-spread">
+                                <lightning:button variant="brand" label="Previous" onclick="{!c.onPrevious}"/>
+                            </div>
+                        </footer>
+                    </div>
+                </aura:set>
+            </aura:if>	
+            
+        </div>
+    </div>
+</aura:component>

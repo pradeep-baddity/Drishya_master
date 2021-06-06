@@ -1,0 +1,212 @@
+<aura:component implements="lightning:actionOverride,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller = "showRelatedRecords">
+    
+    <aura:attribute name="openModal" type="boolean" default="false"/>
+    <aura:attribute name="openContact" type="boolean" default="false"/>
+    <aura:attribute name="openHuronconnection" type="boolean" default="false"/>
+    
+    <aura:attribute type="opportunity[]" name="acctList" default="{'Name': '', 'Account name':''}"/>
+    <aura:attribute type="contact[]" name="accList1" default="{'Name': '', 'Account name':''}"/>
+    <aura:attribute type="Huron_Connection__c[]" name="accList2" default="{'Name': '', 'Account Name':''}"/>
+    
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="mycontacts" type="List"/>
+    <aura:attribute name="myhuronconnections" type="List"/>
+    
+    <aura:attribute name = "sortedBy" type = "String" default = "AccountName"/> 
+ <!--   <aura:attribute name = "consortedBy" type = "String" default = "AccountName"/> 
+    <aura:attribute name = "huronconsortedBy" type = "String" default = "AccountName"/>
+    <aura:attribute name = "sortedBy1" type = "String" default = "AccountName"/> -->
+    
+    
+    <aura:attribute name = "sortedDirection" type = "String" default = "asc"/> 
+ <!--<aura:attribute name = "consortedDirection" type = "String" default = "asc"/>
+    <aura:attribute name = "huronconsortedDirection" type = "String" default = "asc"/>
+    <aura:attribute name = "sortedDirection1" type = "String" default = "asc"/> -->
+    
+    <aura:attribute name="oppId"  type="String"/> 
+    
+    <aura:attribute name="Stages" type="String"/>
+    
+    <!-- create 2 aura handler with waiting and donewaiting events--> 
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <!--create a component attributs -->
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    <aura:attribute name="Spinner1" type="boolean" default="false"/>
+    <aura:attribute name="Spinner2" type="boolean" default="false"/>
+    
+    <aura:attribute name="data" type="Object"/>
+    <!--<aura:handler name="init" value="{!this}" action="{!c.fetchAcc}"/>-->
+    
+    <div class="slds-page-header">
+        <div class="slds-grid slds-p-bottom_small">
+            <p style="text-align:center" class=" slds-line-height_reset slds-align_absolute-center"><strong><b><h1>Account Hierarchy</h1> </b></strong></p>
+        </div>
+        <lightning:layout horizontalAlign="right">
+            
+        <div class="slds-grid slds-p-bottom_small">
+            
+            <lightning:button  class="slds-button slds-button--brand slds-align_absolute-center "  onclick="{!c.navigateToAccountHierarchy}"> All Accounts </lightning:button> 
+        </div>
+             &nbsp;&nbsp;&nbsp; 
+        <div class="slds-grid slds-p-bottom_small">
+            
+            <lightning:button  class="slds-button slds-button--brand slds-align_absolute-center "  onclick="{!c.handleOpenModal}"> All Opportunities </lightning:button> 
+        </div>
+            </lightning:layout>
+        <br></br>
+        <lightning:layout horizontalAlign="right">
+        <div class="slds-grid slds-p-bottom_small">
+            <lightning:button  class="slds-button slds-button--brand slds-align_absolute-center" onclick="{!c.handleOpenContact}"> All Contacts </lightning:button>
+        </div>
+         &nbsp;&nbsp;&nbsp;
+        <div class="slds-grid slds-p-bottom_small">
+            <lightning:button  class="slds-button slds-button--brand slds-align_absolute-center" onclick="{!c.handleopenHuronconnection}"> All Huron Connections </lightning:button>
+        </div>
+        </lightning:layout>
+    </div>
+    
+    <aura:if isTrue="{!v.openModal}">
+        <div role="dialog" class="slds-modal slds-fade-in-open ">
+            <div class="slds-modal__container">
+                
+                <!--loading spinner start... style=Brand Medium (blue dots)-->
+                <aura:if isTrue="{!v.Spinner}">
+                    <div aura:id="spinnerId" class="slds-spinner_container">
+                        <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if>
+                <!-- Loading spinner end-->     
+                <div class="slds-modal__content slds-p-around--medium"> 
+                    <div class="slds-box slds-theme_default"> 
+                        <div class="align_text"><h1><b>Related Records</b></h1></div>
+                        <lightning:select aura:id="PicklistId" class="max_width" name="select1" value="{!v.Stages}"  onchange="{!c.searchKeyChange}">
+                            <option value="">All Opportunities</option>
+                            <option value="Open">Open Opportunities</option>
+                            <option value="Won">Closed Won Opportunities</option>
+                            <option value="Lost">Closed Lost Opportunities</option>
+                        </lightning:select>
+                        <aura:if  isTrue="{!and(v.acctList.length > 0, v.acctList.length != null)}">					
+                            <lightning:datatable class="dataTableCol"
+                                                 data="{!v.acctList}" 
+                                                 recordId ="{!v.recordId}"
+                                                 columns="{!v.mycolumns }" 
+                                                 keyField="id"
+                                                 hideCheckboxColumn="true"
+                                                 onrowaction="{!c.buttonActions}"
+                                                 onsort="{!c.updateColumnSorting}"
+                                                 sortedBy="{!v.sortedBy}"
+                                                 sortedDirection="{!v.sortedDirection}"
+                                                 aura:id="oppdatatable"
+                                                 showRowNumberColumn="false"/>  
+                        </aura:if>	
+                        <aura:if isTrue="{!empty(v.acctList)}">
+                            <div class="slds-align_absolute-center"><b>No Records Found</b></div>
+                        </aura:if> 
+                        
+                    </div>
+                    
+                </div>
+                
+                
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--brand" onclick="{!c.handleCloseModal}">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+    <!-- Karishma Code for dispalying the all Contact -->
+    
+    <aura:if isTrue="{!v.openContact}">
+        <div role="dialog" class="slds-modal slds-fade-in-open ">
+            <div class="slds-modal__container">
+                
+                <!--loading spinner start... style=Brand Medium (blue dots)-->
+                <aura:if isTrue="{!v.Spinner1}">
+                    <div aura:id="spinnerId" class="slds-spinner_container">
+                        <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if>
+                <!-- Loading spinner end-->     
+                <div class="slds-modal__content slds-p-around--medium"> 
+                    <div class="slds-box slds-theme_default"> 
+                        <div class="align_text"><h1><b>Related Records</b></h1></div>
+                        <aura:if  isTrue="{!and(v.accList1.length > 0, v.accList1.length != null)}">					
+                            <lightning:datatable class="dataTableCol"
+                                                 data="{!v.accList1}" 
+                                                 recordId ="{!v.recordId}"
+                                                 columns="{!v.mycontacts }"
+                                                 onsort="{!c.updateContactSorting}"
+                                                 sortedBy="{!v.sortedBy}"
+                                                 sortedDirection="{!v.sortedDirection}"
+                                                 hideCheckboxColumn="true"
+                                                 keyField="id" /> 
+                        </aura:if>	
+                        <aura:if isTrue="{!empty(v.accList1)}">
+                            <div class="slds-align_absolute-center"><b>No Records Found</b></div>
+                        </aura:if> 
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--brand" onclick="{!c.handleCloseModal}">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+   
+    
+<!-- Arpitha Code for dispalying the all Huron Connections -->
+    
+    <aura:if isTrue="{!v.openHuronconnection}">
+        <div role="dialog" class="slds-modal slds-fade-in-open ">
+            <div class="slds-modal__container">
+                
+                <!--loading spinner start... style=Brand Medium (blue dots)-->
+                <aura:if isTrue="{!v.Spinner2}">
+                    <div aura:id="spinnerId" class="slds-spinner_container">
+                        <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if>
+                <!-- Loading spinner end-->     
+                <div class="slds-modal__content slds-p-around--medium"> 
+                    <div class="slds-box slds-theme_default"> 
+                        <div class="align_text"><h1><b>Related Records</b></h1></div>
+                        <aura:if  isTrue="{!and(v.accList2.length > 0, v.accList2.length != null)}">					
+                            <lightning:datatable class="dataTableCol"
+                                                 data="{!v.accList2}" 
+                                                 recordId ="{!v.recordId}"
+                                                 columns="{!v.myhuronconnections}" 
+                                                 hideCheckboxColumn="true"
+                                                 keyField="id" 
+                                                 onrowaction="{!c.buttonActions}"
+                                                 onsort="{!c.updateSorting}"
+                                                 sortedBy="{!v.sortedBy}"
+                                                 sortedDirection="{!v.sortedDirection}"
+                                                 aura:id="oppdatatable"
+                                                 showRowNumberColumn="false" />  
+                        </aura:if>	
+                        <aura:if isTrue="{!empty(v.accList2)}">
+                            <div class="slds-align_absolute-center"><b>No Records Found</b></div>
+                        </aura:if> 
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--brand" onclick="{!c.handleCloseModal}">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

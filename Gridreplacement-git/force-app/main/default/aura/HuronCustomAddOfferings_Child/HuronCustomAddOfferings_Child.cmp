@@ -1,0 +1,83 @@
+<!--
+@Component Name     : HuronCustomAddOfferings_Child.cmp
+@Description        : 
+@Author             : Tapas Tulo
+@Group              : 
+@Last Modified By   : ChangeMeIn@UserSettingsUnder.SFDoc
+@Last Modified On   : 8/9/2019, 12:48:46 PM
+@Modification Log   : 
+==============================================================================
+Ver         Date                     Author      		      Modification
+==============================================================================
+1.0    8/8/2019, 6:09:57 PM    ttulo@huronconsultinggroup.com.prod.devsandbox    Initial Version
+-->
+<aura:component controller="CustomProductsAddController">
+    
+    <!-- handlers-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.singleProd}" action="{!c.valueChanged}"/>
+    <!--<aura:registerEvent name="loadMyEvent" type="c:offering"/> -->
+    
+    <!-- aura attributes-->
+     
+    <aura:attribute name="singleProd"  type="opportunityLineItem"  /> 
+    <aura:attribute name="reRenderFlag" type="boolean" default="true"/> 
+    <aura:attribute name="isSelected" type="boolean" default="true"/>
+    <aura:attribute name="isNext" type="Boolean" default="false" />
+    <aura:attribute name="quanitity" type="Integer"/>
+    <aura:attribute name="UnitPrice" type="Integer"  />
+    <aura:attribute name="multipleRows" type="OpportunityLineItem[]" />
+    <aura:attribute name="selectedrows" type="list[]" />
+    
+    <!--ura:handler name="change" value="{!v.singleProd}" action="{!c.handleValueChange}"/-->
+    <tr class="{!if(v.isNext,if(v.singleProd.isSelected,'','slds-hide'),'')}">
+        
+        <!--{!v.singleProd.isSelected}-->
+        <th data-label="{!v.singleProd.isSelected}" scope="row" style="padding-left: 0.5rem;">
+            <div class="slds-col ">
+            <a onclick="{!c.updateSelectedMap}" >
+                <lightning:icon iconName="{!if(v.singleProd.isSelected,'action:approval','action:new')}" size="x-small" alternativeText="select"/>
+                </a></div>
+        </th>
+        <th data-label="{!v.singleProd.ApexProductName__c}" scope="row" style="padding-left: 0.5rem;">
+            
+            <div class="slds-truncate "  title="{!v.singleProd.ApexProductName__c}">
+                {!v.singleProd.ApexProductName__c}
+            </div> 
+        </th>
+        
+        <aura:if isTrue="{!and(v.reRenderFlag,v.singleProd)}"> 
+            
+            <lightning:recordEditForm             
+                                      objectApiName="OpportunityLineItem">
+                <th class="{!if((v.isNext),'','slds-hide')}">
+                    <div style="float: right;width: 130px;padding-bottom: 4.5rem;  ">
+                        <lightning:input aura:id="UnitPrice" fieldName="UnitPrice" type="number" value="{!v.singleProd.UnitPrice}" variant="label-hidden" onchange="{!c.convertAmountSI}" /> 
+                    </div>
+                </th>
+                <th class="{!if((v.isNext),'slds-hide','slds-hide')}">
+                    <div style="float: right;width: 170px;">
+                        <lightning:inputField fieldName="Offering__c" value="{!v.singleProd.Offering__c}" variant="label-hidden" disabled="true" onchange="{!c.offeringChange}" />
+                    </div>
+                </th>
+                <th class="{!if((v.isNext),'','slds-hide')}" >
+                    <div style="float: right;width: 140px;padding-bottom: 4.5rem;">   
+                        <lightning:inputField fieldName="Service_Line_or_Product__c" variant="label-hidden" onchange="{!c.serviceChange}"/> 
+                    </div> </th> 
+                
+                <th class="{!if(not(v.isNext),'','slds-hide')}">
+                    <ui:inputNumber value="{!v.singleProd.quantity}" change="{!c.validateQuantitySize}" /> 
+                </th>                                      
+                
+                <th class="{!if((v.isNext),' ','slds-hide ')}" >
+                    <div style="float: right;width: 460px;">                   
+                        <lightning:inputField fieldName="Module_or_Accelerator2__c"  value="{!v.singleProd.Module_or_Accelerator2__c}" variant="label-hidden" /> 
+                    </div>
+                </th>
+            
+                
+            </lightning:recordEditForm> 
+            
+        </aura:if> 
+    </tr>
+</aura:component>

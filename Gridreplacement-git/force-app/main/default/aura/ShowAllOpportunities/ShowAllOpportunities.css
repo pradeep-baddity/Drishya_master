@@ -1,0 +1,21 @@
+.THIS .slds-modal__container{
+    max-width: 100rem !important;
+    width: 98% !important;
+}
+
+.THIS .max_width{
+    width: max-content !important;
+    margin-bottom: 10px !important;
+    margin-top: -15px !important;
+}
+
+
+.THIS .align_text{
+        text-align: center !important;
+}
+
+.THIS .link{
+    color: -webkit-link;
+    cursor: pointer;
+    text-decoration: underline;
+}

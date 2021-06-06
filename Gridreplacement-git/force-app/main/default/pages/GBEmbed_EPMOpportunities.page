@@ -1,0 +1,9 @@
+<apex:page standardController="Opportunity" sidebar="false" showHeader="false">
+    <apex:stylesheet value="/sCSS/25.0/sprites/1342034628000/Theme3/default/gc/versioning.css" />
+    <apex:stylesheet value="/sCSS/25.0/sprites/1342034628000/Theme3/default/gc/extended.css" />
+    <apex:tabPanel switchType="client" selectedTab="tabdetails" tabClass="activeTab" inactiveTabClass="inactiveTab">
+        <apex:tab label="EPM">
+            <iframe id="gridFrame" scrolling="auto" height="400" width="100%" frameborder="0" src="/apex/GBLite__grid?gname=EPM Opportunities&fpf=id&fpv={!Opportunity.Id}&sh=0&ssb=0&sbb=0"></iframe>
+        </apex:tab>
+    </apex:tabPanel>
+</apex:page>

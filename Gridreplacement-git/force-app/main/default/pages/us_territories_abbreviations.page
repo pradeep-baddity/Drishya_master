@@ -1,0 +1,19 @@
+<apex:page showHeader="false" sidebar="false">
+  <style> 
+    #customers { font-family:"Arial"; border:1px solid #e0e3e5; }
+    #customers th { border-bottom:1px solid #e0e3e5; background-color:#008080; color:#ffffff; font-weight:bold; text-align:left; } 
+    #customers td { border-bottom:1px solid #cccccc; background-color:#eeeeee; } 
+    #customers td.alt { background-color:#ffffff; } 
+</style> 
+<table id="customers" border="0" cellspacing="0" cellpadding="2" width="100%"> 
+    <tbody>
+        <tr> 
+            <th>Territories</th> 
+            <th>Abbreviation</th> 
+        </tr> 
+        <tr><td>GUAM </td><td>GU</td></tr>
+        <tr><td class="alt">PUERTO RICO</td><td class="alt">PR</td></tr>
+        <tr><td>VIRGIN ISLANDS</td><td>VI</td></tr>
+    </tbody> 
+</table>
+</apex:page>

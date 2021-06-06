@@ -1,0 +1,45 @@
+.THIS .slds-modal__container {
+	width: 80% !important;
+	max-width: 80% !important;
+}
+.THIS .slds-spinner_container  {
+    background-color: rgba(0, 0, 0, 0.20);
+    margin-top: 180px;
+    margin-bottom: 180px; 
+}
+.THIS .spinnerHolder{
+    position: relative;
+    display: inline-block;
+    background : hidden;
+}
+
+.THIS.customErrorMessageContainer {
+    color:dodgerblue;
+    height: 200px;
+    text-align: center;
+    padding-top: 12%;
+    font-size: 1.2rem;
+}
+.THIS .slds-text-title--caps {
+    font-size: 1.3rem;
+    line-height: 1.25;
+    color: rgb(62, 62, 60);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: .0625rem;
+}
+.THIS .slds-form-element__label {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    display: inline-block;
+    color: rgb(62, 62, 60);
+    font-size:  .99rem;
+    padding-right: .5rem;
+    padding-top: .25rem;
+}   
+.THIS .slds-text-title_caps {
+    font-size: .90rem;
+}

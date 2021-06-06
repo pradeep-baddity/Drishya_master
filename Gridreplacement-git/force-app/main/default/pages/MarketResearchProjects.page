@@ -1,0 +1,5 @@
+<apex:page standardController="Contact" sidebar="false" showHeader="false">
+    <GBLite:EmbedComponent baseGridUrl="{!$Page.GBLite__Grid}" />
+
+    <iframe id="gridFrame" scrolling="true" height="480" width="100%" frameborder="0" src="{!gridPage}gname=Market Research Projects&fpf=Expert__c&fpv={!Contact.Id}&sbb=1&sh=0&ssb=0"></iframe>
+</apex:page>

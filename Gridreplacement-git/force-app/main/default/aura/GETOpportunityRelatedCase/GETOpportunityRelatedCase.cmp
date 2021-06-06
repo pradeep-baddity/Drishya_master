@@ -1,0 +1,48 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global"  controller = "GETOpportunityRelatedCase">
+	
+ 
+     <aura:attribute name="onload" type="Aura.Action"/>
+    <aura:handler name="init" value="{!this}" action="{!c.FetchCases}"/>
+      <aura:dependency resource="markup://force:editRecord" type="EVENT" />
+    
+     <aura:handler event="force:refreshView" action="{!c.FetchCases}" />
+
+    
+     <aura:attribute type="Case[]" name="CaseList"/>
+     <aura:attribute name="mycases" type="List"/>
+     <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="sortedDirection" type="Boolean" default="true" />
+    <aura:attribute name="toggleSpinner" type="boolean" default="false"/>
+    
+    <fieldset class="slds-box slds-theme--default slds-container--small">
+
+    <aura:if isTrue="{!v.toggleSpinner}">
+        <div class="slds-spinner_container">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if> 
+            <div class="slds-grid slds-p-bottom_small">
+            <!--yle="text-align:left" class="slds-text-heading_medium slds-hyphenate"><strong><b><h2>Related Cases({!v.CaseList.length})</h2 </b></strong></p> -->
+                <h5  id="modal-heading-01" class="slds-text-heading_small slds-hyphenate"><b>Related Cases({!v.CaseList.length})</b> </h5>
+        </div>  
+    
+        <aura:if  isTrue="{!and(v.CaseList.length > 0, v.CaseList.length != null)}">
+        <lightning:datatable class="dataTableCol"
+                             data="{!v.CaseList}" 
+                             recordId ="{!v.recordId}"
+                             columns="{!v.mycases}" 
+                             keyField="id"
+                             hideCheckboxColumn="true"
+                             hideDefaultActions = "true"
+                             showRowNumberColumn="false"/>  
+        <aura:set attribute="else">
+            <div class="slds-align_absolute-center">No Records Found</div>
+        </aura:set>
+    </aura:if>
+  </fieldset>
+
+</aura:component>

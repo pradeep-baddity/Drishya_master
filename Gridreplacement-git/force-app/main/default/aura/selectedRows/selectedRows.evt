@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Event template" >
+	<aura:attribute name="selectedrowslist" type="Product2[]" access="GLOBAL"/>
+    <aura:attribute name="isNext" type="boolean" /> 
+</aura:event>

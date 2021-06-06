@@ -1,0 +1,22 @@
+@media screen and (max-width: 640px) {
+    .slds-table_header-fixed_container {
+        padding-top: 0px !important;
+    }
+    .slds-table_header-fixed {
+        padding-top: 2rem !important;
+    }
+}
+.lightning-card .slds-th__action .slds-th__action-button { display: none; }
+.lightning-card .slds-line-clamp {
+    -webkit-line-clamp: unset;
+}
+.lightning-card .slds-dueling-list__column_responsive {
+    flex: 0 1 20rem;
+}
+.lightning-card .slds-table_header-fixed_container:before{
+    position: fixed !important;
+    width: 100vh !important;
+}
+.boldLabel lightning-input-field label.slds-form-element__label{
+    font-weight: 700;
+}

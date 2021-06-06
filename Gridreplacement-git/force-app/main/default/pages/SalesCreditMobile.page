@@ -1,0 +1,8 @@
+<apex:page standardController="Opportunity" standardStylesheets="false" showHeader="false" sidebar="false">
+  <html>
+        <head>
+            <meta http-equiv="refresh" content="0;URL=/apex/gblite__Grid?sh=0&gname=Sales Credit&opportunityName={!URLENCODE(Opportunity.Name)}&fpf=Opportunity__c&fpv={!Opportunity.Id}"/>
+        </head>
+        <body></body>
+    </html>
+</apex:page>

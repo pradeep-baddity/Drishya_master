@@ -1,0 +1,31 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global">
+    <aura:attribute type="opportunitylineitem[]" name="prodList" />
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="selectedRowIds" type="List" default="[]"/>
+    <aura:attribute name="selectedRowsCount" type="Integer" default="0"/>
+    <aura:attribute type="opportunitylineitem[]" name="oppLineItemList" />
+    <aura:attribute name="enableNext" type="Boolean" default="true"/>
+    <aura:attribute name="errorMsgAll" type="string" />
+    <aura:attribute name = "OppId" type = "Id"/>
+    <aura:registerEvent name="selectProv" type="c:selectedRows"/>
+    <aura:handler name="init" value="{!this}" action="{!c.getTableColumns}"/>
+    <div class="slds-box slds-theme_default">
+        <h1>Selected Rows: ({! v.selectedRowsCount })</h1>
+       
+        <lightning:datatable class="dataTableCol"
+                             data="{!v.prodList}" 
+                             recordId ="{!v.recordId}"
+                             columns="{!v.mycolumns }" 
+                             keyField="id"
+                             aura:id="oppdatatable"
+                             hideCheckboxColumn="false"
+                             selectedRows = "{!v.selection}"
+                             onrowselection ="{!c.updateSelectedText}"/>  
+    </div><br/>
+    <footer>
+        <div class="slds-float--right slds-col modal-footer slds-modal_footer slds-grid slds-grid_align-spread position:fixed">
+            <lightning:button variant="brand" label="Next" onclick="{!c.onNext}" disabled = "{!v.enableNext}"/>
+            <lightning:button variant="brand" label="Cancel" onclick="{!c.cancelClick}"/>
+        </div>
+    </footer>
+</aura:component>

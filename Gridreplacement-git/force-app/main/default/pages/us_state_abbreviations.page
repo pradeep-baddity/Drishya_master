@@ -1,0 +1,66 @@
+<apex:page showHeader="false" sidebar="false">
+  <style> 
+    #customers { font-family:"Arial"; border:1px solid #e0e3e5; }
+    #customers th { border-bottom:1px solid #e0e3e5; background-color:#008080; color:#ffffff; font-weight:bold; text-align:left; } 
+    #customers td { border-bottom:1px solid #cccccc; background-color:#eeeeee; } 
+    #customers td.alt { background-color:#ffffff; } 
+</style> 
+<table id="customers" border="0" cellspacing="0" cellpadding="2" width="100%"> 
+    <tbody>
+        <tr> 
+            <th>State</th> 
+            <th>Abbreviation</th> 
+        </tr> 
+        <tr><td>Alabama </td><td>AL</td></tr>
+        <tr><td class="alt">Alaska </td><td class="alt">AK</td></tr>
+        <tr><td>Arizona </td><td>AZ</td></tr>
+        <tr><td class="alt">Arkansas </td><td class="alt">AR</td></tr>
+        <tr><td>California </td><td>CA</td></tr>
+        <tr><td class="alt">Colorado </td><td class="alt">CO</td></tr>
+        <tr><td>Connecticut </td><td>CT</td></tr>
+        <tr><td class="alt">Delaware </td><td class="alt">DE</td></tr>
+        <tr><td>Florida </td><td>FL</td></tr>
+        <tr><td class="alt">Georgia </td><td class="alt">GA</td></tr>
+        <tr><td>Hawaii </td><td>HI</td></tr>
+        <tr><td class="alt">Idaho </td><td class="alt">ID</td></tr>
+        <tr><td>Illinois </td><td>IL</td></tr>
+        <tr><td class="alt">Indiana </td><td class="alt">IN</td></tr>
+        <tr><td>Iowa </td><td>IA</td></tr>
+        <tr><td class="alt">Kansas </td><td class="alt">KS</td></tr>
+        <tr><td>Kentucky </td><td>KY</td></tr>
+        <tr><td class="alt">Louisiana </td><td class="alt">LA</td></tr>
+        <tr><td>Maine </td><td>ME</td></tr>
+        <tr><td class="alt">Maryland </td><td class="alt">MD</td></tr>
+        <tr><td>Massachusetts </td><td>MA</td></tr>
+        <tr><td class="alt">Michigan </td><td class="alt">MI</td></tr>
+        <tr><td>Minnesota </td><td>MN</td></tr>
+        <tr><td class="alt">Mississippi </td><td class="alt">MS</td></tr>
+        <tr><td>Missouri </td><td>MO</td></tr>
+        <tr><td class="alt">Montana </td><td class="alt">MT</td></tr>
+        <tr><td>Nebraska </td><td>NE</td></tr>
+        <tr><td class="alt">Nevada </td><td class="alt">NV</td></tr>
+        <tr><td>New Hampshire </td><td>NH</td></tr>
+        <tr><td class="alt">New Jersey </td><td class="alt">NJ</td></tr>
+        <tr><td>New Mexico </td><td>NM</td></tr>
+        <tr><td class="alt">New York </td><td class="alt">NY</td></tr>
+        <tr><td>North Carolina </td><td>NC</td></tr>
+        <tr><td class="alt">North Dakota </td><td class="alt">ND</td></tr>
+        <tr><td>Ohio </td><td>OH</td></tr>
+        <tr><td class="alt">Oklahoma </td><td class="alt">OK</td></tr>
+        <tr><td>Oregon </td><td>OR</td></tr>
+        <tr><td class="alt">Pennsylvania </td><td class="alt">PA</td></tr>
+        <tr><td>Rhode Island </td><td>RI</td></tr>
+        <tr><td class="alt">South Carolina </td><td class="alt">SC</td></tr>
+        <tr><td>South Dakota </td><td>SD</td></tr>
+        <tr><td class="alt">Tennessee </td><td class="alt">TN</td></tr>
+        <tr><td>Texas </td><td>TX</td></tr>
+        <tr><td class="alt">Utah </td><td class="alt">UT</td></tr>
+        <tr><td>Vermont </td><td>VT</td></tr>
+        <tr><td class="alt">Virginia </td><td class="alt">VA</td></tr>
+        <tr><td>Washington </td><td>WA</td></tr>
+        <tr><td class="alt">West Virginia </td><td class="alt">WV</td></tr>
+        <tr><td>Wisconsin </td><td>WI</td></tr>
+        <tr><td class="alt">Wyoming </td><td class="alt">WY</td></tr>
+    </tbody> 
+</table>
+</apex:page>

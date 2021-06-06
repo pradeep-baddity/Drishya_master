@@ -1,0 +1,78 @@
+<aura:component controller = 'addOfferings' implements="force:lightningQuickActionWithoutHeader,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="openModal" type="boolean" default="false"/>
+    <aura:attribute type="product2[]" name="prodList" />
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="selectedRowsCount" type="Integer" default="0"/>
+    <aura:attribute name="searchKeyword" 	type="String" 	default='' />
+    <aura:attribute name="isNext" type="Boolean" default="false"/>
+    <aura:attribute name="singleProd" 		type="Object" />
+    <aura:attribute name="multipleRows" 		type="OpportunityLineItem[]" />
+    <aura:attribute name="selectedSearchableList" type="List"/>
+    <aura:handler name="init" value="{!this}" action="{!c.fetchproducts}"/>
+    <aura:registerEvent name="selectProv" type="c:selectedRows"/>
+    <div>
+        <div class="slds-modal__content slds-p-around--medium"> 
+            <aura:html tag="style">
+                .slds-modal__container{
+                height : auto;
+                width: 120%;
+                max-width: 80rem;
+                }
+                .modal-body{
+                height : 500px !important;
+                max-height: 500px !important;
+                }
+                
+                .customFooter{
+                display: inline !important;
+                }
+            </aura:html> 
+            
+            <div clas = "slds-col modal-header slds-modal__header">
+                <h2 class="slds-line-height_reset slds-align_absolute-center">Add Offerings</h2>
+                <h1 class="slds-line-height_reset slds-align_absolute-center">Price Book: Huron 2021</h1>
+            </div>
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap" style="width: 80% !important">
+                <!---Search Box for International customer Group-->
+                <div class="st-default-search-input" style="width: 2000px"  >
+                    <lightning:input type="search" value="{!v.searchKeyword}"  label="Search"
+                                     variant="label-hidden" placeholder="Search Offerings..." onkeyup="{!c.searchKeyChange}"/>
+                </div>
+            </div>
+            <!-- <aura:if  isTrue="{!and(v.prodList.length > 0, v.prodList.length != null)}">	-->
+            <div class="slds-box slds-theme_default">
+                <h1>Selected Rows: ({! v.selectedRowsCount })</h1>
+                <lightning:datatable class="dataTableCol"
+                                     data="{!v.prodList}" 
+                                     recordId ="{!v.recordId}"
+                                     columns="{!v.mycolumns }" 
+                                     keyField="id"
+                                     aura:id="oppdatatable"
+                                     hideCheckboxColumn="false"
+                                     selectedRows = "{!v.selection}"
+                                     onrowaction="{! c.handleRowAction }"
+                                     onrowselection ="{!c.updateSelectedText}"/>  
+            </div>
+            
+            <!--<aura:if isTrue="{!empty(v.opportunitylineitem)}">
+                <div class="slds-align_absolute-center"><b>No Records Found</b></div>
+            </aura:if> -->
+        </div>
+        <div class="{!if((v.isNext),'slds-col modal-header slds-modal__header','slds-hide')}"> 
+            <h2 class="title slds-text-heading--medium">Edit Selected Offerings</h2>
+        </div>
+        <aura:if isTrue="{!v.isNext}"> 
+            
+            <aura:iteration items="{!v.selectedRows}" var="product">
+                <c:HuronCustomAddOfferings_Child singleProd="{!product}" 
+                                                 isNext="{!v.isNext}" />
+            </aura:iteration>
+        </aura:if>
+        <footer>
+            <div class="slds-float--right slds-col modal-footer slds-modal_footer slds-grid slds-grid_align-spread">
+                <lightning:button variant="brand" label="{!if(v.isNext,'Previous','Next')}" onclick="{!c.onNext}"/>
+                <lightning:button variant="brand" label="Cancel" onclick="{!c.cancelClick}"/>
+            </div>
+        </footer>
+    </div>
+</aura:component>

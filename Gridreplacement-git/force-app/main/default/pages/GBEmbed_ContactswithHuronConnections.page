@@ -1,0 +1,8 @@
+<apex:page standardController="Account" sidebar="false" showHeader="false">
+    <apex:tabPanel switchType="client" selectedTab="tabDetails" tabClass="activeTab" inactiveTabClass="inactiveTab">
+        <apex:tab label="Connections">
+            <apex:variable var="gridPage" value="{!URLFOR($Page.GBLite__Grid)}" />
+            <iframe id="gridFrame" scrolling="auto" height="480" width="100%" frameborder="0" src="{!gridPage}?gname=Contacts with Huron Connections&fpf=AccountId&fpv={!Account.Id}&sbb=1&sh=0&ssb=0"></iframe>
+        </apex:tab>
+    </apex:tabPanel>
+</apex:page>

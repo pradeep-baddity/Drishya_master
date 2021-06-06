@@ -1,0 +1,129 @@
+<!--
+@Component Name     : New_CustomAddOfferings_Parent.cmp
+@Description        : 
+@Author             : ttulo@huronconsultinggroup.com.prod.devsandbox
+@Group              : 
+@Last Modified By   : ttulo@huronconsultinggroup.com
+@Last Modified On   : 8/9/2019, 2:33:57 PM
+@Modification Log   : 
+==============================================================================
+Ver         Date                     Author      		      Modification
+==============================================================================
+1.0    8/8/2019, 5:57:07 PM   ttulo@huronconsultinggroup.com.prod.devsandbox     Initial Version
+2.0    21/8/2019, 11:30:07 AM   ttulo@huronconsultinggroup.com.prod.devsandbox   Second Version
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global"
+                controller="CustomProductsAddController">
+    
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    
+    <!-- attributes latest -->
+    <aura:attribute name="selectedProductList" 		type="OpportunityLineItem[]" />
+    <aura:attribute name="toSaveproductList" 		type="OpportunityLineItem[]" />
+    <aura:attribute type="Opportunity" name="OpportunityRecord" />
+    <aura:attribute name="productList" 		type="OpportunityLineItem[]" />
+    <aura:attribute name="singleProd" 		type="Object" />
+    <aura:attribute name="isLoading" 		type="Boolean" 	default="false" />
+    <aura:attribute name="searchKeyword" 	type="String" 	default='' />
+    <aura:attribute name="newList" 	type="object" 	default='' />
+    <!--<aura:attribute name="OfferingsList" type="Object"/>-->
+    <aura:attribute name="currencycode" 	type="String" 	default='' />
+    <aura:attribute name="saveButtonDisable" type="boolean" default="false" />
+    <aura:attribute name="isNext" type="Boolean" default="false" description="Handles the next Button"/>
+    <aura:attribute name="serverCall" type="boolean" default="false" />
+    <aura:attribute name="showError" type="boolean" default="false" />
+    <aura:attribute name="cssStyle" type="boolean" default="false" />
+    <aura:attribute name="quanitity" type="Integer"  />
+    <aura:attribute name="UnitPrice" type="Integer"  />
+    <aura:attribute name="multipleRows" 		type="OpportunityLineItem[]" />
+    
+    
+    <!--To maintain the modal size-->
+    <aura:unescapedHtml value="{!v.cssStyle}"/>
+    
+    
+    
+    <!--First Screen Header-->
+    <div class="{!if(not(v.isNext),'slds-col modal-header slds-modal__header','slds-hide')}"> 
+        <h2 class="title slds-text-heading--medium">Add Offerings</h2>
+        <h1 class="title slds-text-heading--small">Price Book: Huron 2018</h1>
+    </div><br/>
+    
+    <!--Second Screen Header-->
+    <div class="{!if((v.isNext),'slds-col modal-header slds-modal__header','slds-hide')}"> 
+        <h2 class="title slds-text-heading--medium">Edit Selected Offerings</h2>
+    </div>
+    
+    <div class="{!if(not(v.isNext),'slds-align_absolute-center','slds-hide')}" >
+        <aura:if isTrue="{!($Browser.formFactor eq 'DESKTOP')}">
+            <!-- Mark Up for DESKTOP-->
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap" style="width: 80% !important">
+                <!---Search Box for International customer Group-->
+                <div class="SearchKeyBox" >
+                    <lightning:input type="search" value="{!v.searchKeyword}"  label="Search"
+                                     variant="label-hidden" placeholder="Search Offerings..." onkeyup="{!c.searchKeyChange}"/>
+                </div>
+            </div>
+        </aura:if>
+    </div> <br/>
+    <aura:if isTrue="{!v.isLoading}">
+        <div style="width:70%;">
+            <lightning:spinner variant="brand" size="large"/>
+        </div>
+    </aura:if>
+    
+    <div aura:id="dataTab" >
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Select"></div>
+                </th>                       
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="OFFERING NAME">OFFERING LIST </div>
+                </th>
+                
+                <aura:if isTrue="{!not(v.isNext)}">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="SALES PRICE"> QUANTITY </div>
+                    </th>
+                    
+                    <aura:set attribute="else">
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Module Accelerator"> &nbsp; &nbsp; SALES PRICE  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;SERVICE LINE &nbsp; &nbsp;  &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;  &nbsp; &nbsp;  &nbsp;   Module Accelerator </div>
+                        </th>
+                        
+                    </aura:set>
+                </aura:if>
+            </thead>
+            <tbody>
+                <aura:if isTrue="{!v.isNext}"> 
+                    <aura:iteration items="{!v.multipleRows}" var="product">
+                        <c:HuronCustomAddOfferings_Child singleProd="{!product}" 
+                                                         isNext="{!v.isNext}"                                                                                                               
+                                                         />
+                    </aura:iteration>
+                    <aura:set attribute="else">
+                        <aura:iteration items="{!v.productList}" var="product">
+                            <c:HuronCustomAddOfferings_Child singleProd="{!product}" 
+                                                             isNext="{!v.isNext}"
+                                                             multipleRows="{!multipleRows}"
+                                                             />
+                        </aura:iteration>
+                    </aura:set>
+                </aura:if>
+                
+                
+            </tbody>
+        </table> <br/>
+        <div class="slds-align_absolute-center">
+            <aura:if isTrue="{!(v.isNext)}">
+                <lightning:button variant="brand" label="Save" onclick="{!c.savingOpportunityLineItem}" disabled="{!v.saveButtonDisable}"/>
+            </aura:if>
+            <lightning:button variant="brand" label="{!if(v.isNext,'Previous','Next')}" onclick="{!c.onNext}"/>
+            <lightning:button variant="brand" label="Cancel" onclick="{!c.cancelClick}"/>
+        </div>
+    </div>
+    
+</aura:component>

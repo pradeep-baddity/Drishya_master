@@ -1,0 +1,82 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" controller="HC_SplitOpportunity" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="OLI" type="Object" />
+    <aura:attribute name="OLIList" type="List" />
+    <aura:attribute name="errors" type="Object" default="[]"/>
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="OpportunityRec" type="Opportunity" 
+                    default="{ 'sobjectType': 'Opportunity','Name':'' }"/>
+    <aura:attribute name="saveButtonDisable" type="boolean" default="false" />
+    <aura:attribute name="IsLoading" type="Boolean" default="true" />
+    <aura:attribute name="IsclosedWonStage" type="Boolean" default="false" />
+    <aura:attribute name="numberOfRawSelected" type="integer" />
+    <aura:attribute name="ErrorMessage" type="string" />
+    <aura:attribute name="oppName" type="string" />
+    <aura:attribute name="errorMsgAll" type="string" />
+    <aura:attribute name="isButtonActive" type="Boolean" default="true" />
+
+    
+    
+    <ltng:require styles="{!$Resource.ModalWidthCSS}"/>
+
+    
+    <!--   <aura:iteration items="{!v.OLI}" var="item">
+       <ui:inputCheckbox aura:id="checkbox" label="Interested" value="{!item.Interested__c}" change="{!c.onCheck}"/>
+         <ui:outputText value="{!item.Name}"/> 
+    </aura:iteration> -->
+    
+    <div class="slds-col modal-header slds-modal__header">
+        <h1 class="slds-text-heading_xLarge slds-text-title--caps headingCls" >Split Opportunity</h1>
+    </div>
+    
+    <aura:if isTrue="{! v.IsclosedWonStage}">
+        <div class="customErrorMessageContainer">{!v.ErrorMessage}</div>
+    </aura:if>
+    
+    <!-- all error msgs-->
+    <aura:if isTrue="{! not(empty(v.errorMsgAll))}">
+        <ui:message title="Error" severity="error" closable="true">
+            {!v.errorMsgAll}
+        </ui:message>
+    </aura:if>
+    <aura:if isTrue="{! !v.IsclosedWonStage}">
+        <div style="height: 200px">
+            <aura:if isTrue="{!v.IsLoading}">
+                <div style="width:100%;">
+                    <lightning:spinner variant="brand" size="small"/>
+                </div>
+                <aura:set attribute="else"> 
+                    
+                    <lightning:datatable
+                                         columns="{! v.columns }"
+                                         data="{! v.OLI }"
+                                         keyField="Id"
+                                         onrowaction="{! c.handleRowAction }"
+                                         onheaderaction="{! c.handleHeaderAction }"
+                                         errors="{! v.errors }"
+                                         draftValues="{! v.draftValues }"
+                                         onsave="{! c.handleSaveEdition }"
+                                         onrowselection="{! c.getSelectedName }"/> </aura:set>
+            </aura:if>
+        </div>
+        
+        <div class="">
+            <lightning:input class= "" name="OpportunityName" aura:id="inpName" label="Opportunity Name" required = "true" value="{!v.OpportunityRec.Name}" onchange = "{!c.activeButton}"/>
+           
+        </div><br/>
+    </aura:if>
+    <div align="middle" draggable="false">
+        <div class="slds-col modal-footer "> 
+       <!--     <aura:if isTrue="{! !v.IsclosedWonStage}">
+                <lightning:button variant="brand" label="Save" onclick="{!c.saveOpportunity}" disabled="{!v.saveButtonDisable}"/>
+            </aura:if> -->
+            <aura:if isTrue="{! !v.IsclosedWonStage}">
+                <lightning:button variant="brand" label="Save" onclick="{!c.saveOpportunity}" disabled= "false"/>
+            </aura:if>
+            
+            <lightning:button variant="brand" label="Cancel" onclick="{!c.cancelClick}"/>
+        </div> 
+    </div>
+</aura:component>

@@ -1,0 +1,107 @@
+<aura:component controller="WD_PromptOLIFieldsController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+       <ltng:require styles="{!$Resource.prompt_style}" />
+    
+    <aura:attribute name="oppLineItems" type="OpportunityLineItem[]" />
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="openModal" type="boolean" default="false"/>
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="cssStyle" type="boolean" default="false" />
+    
+    <!--To maintain the modal size-->
+    <aura:unescapedHtml value="{!v.cssStyle}"/>
+    <!--This attribute will hold the update records from data table-->
+    <aura:attribute name="updatedOliRecord" type="Object" default="[]"/>
+    
+     <aura:handler event="force:refreshView" action="{!c.refreshHandler}"/>
+
+    <force:recordData aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        fields="Name"
+        recordUpdated="{!c.refreshHandler}"/> 
+    <!--the Below aura htm tag is to keep the Save and cancel button outside of the footer-->
+    
+    <aura:if isTrue="{!v.openModal}">  
+        <section role="dialog" aura:id="myModal" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.handleCloseModal}"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Opportunity Product</h2>
+                </header>
+                
+                <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+                    <div aura:id="dataTab" >
+                        <table >
+                            <!--<thead>  
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="OFFERING NAME">Offering &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp;Technology Module &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp;Software Usage Levels</div>
+                                    </th>
+                                </tr>
+                            </thead>-->
+                            <tbody>
+                                
+                                <aura:iteration items="{!v.oppLineItems}" var="Oli">
+                                    <tr>
+                                        <lightning:recordEditForm   
+                                                                  aura:id="recordEditForm"
+                                                                  objectApiName="OpportunityLineItem"
+                                                                  onsubmit="{!c.handleSubmit}"
+                                                                  recordId="{!Oli.Id}"
+                                                                  onsuccess="{!c.handleSuccess}"
+                                                                  onerror="{!c.handleError}">
+                                            
+                                            <th  width="20%">
+                                                <b>Product Name</b>
+                                                <br/>
+                                                <b></b>
+                                                  <div></div>
+                                                <div style="color: #006DCC"  title="{!Oli.ProductName__c}"   variant="label-hidden" class="slds-form-element_stacked">
+                                                    {!Oli.ProductName__c}
+                                                </div> 
+                                              
+                                            </th>
+                                            <th width="30%">
+                                                <b>Technology Module</b>
+                                                <div  style="color: #006DCC" title="Technology Module">
+                                                    <lightning:inputField fieldName="Technology_Module__c"  variant="label-hidden" />
+                                                </div>
+                                                
+                                            </th>
+                                            <th width="30%">
+                                                <b>Software Usage Level</b>
+                                                <div style="color: #006DCC" title="Software Usage Level">
+                                                    <lightning:inputField fieldName="Software_Usage_Level__c"  variant="label-hidden"/>
+                                                </div>
+                                            </th>
+                                            
+                                        </lightning:recordEditForm>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table> 
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.handleCloseModal}">Cancel</button>
+                    <button class="slds-button slds-button_neutral" onclick="{!c.handleSubmit}">Save</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+</aura:component>

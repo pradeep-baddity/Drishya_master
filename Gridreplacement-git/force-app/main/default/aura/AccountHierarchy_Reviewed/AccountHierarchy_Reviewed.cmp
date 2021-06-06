@@ -1,0 +1,43 @@
+<aura:component  implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" controller ="AccountHierachyController">
+     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="enable_review_content" type="Boolean" default="false" /> 
+      <aura:attribute name="enable_true_false" type="Boolean" default="true" /> 
+   
+    <aura:attribute name="mycolumns" type="String" default=""/>
+
+   
+    <aura:if isTrue="{!v.mycolumns==null}">
+     <br></br>  <br></br> <br></br>
+     
+              <h1 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"><center>Account Review</center></h1>
+          <br></br>
+        <center><b><h1 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"><b>Are you sure you want to review this account?</b></h1></b></center>
+                  
+                    <!--Modal Box Content End-->
+                     
+                    <!--Modal Box Button Start-->
+                   <!-- <footer class="slds-modal__footer">-->
+ <br></br>
+                       <center> <lightning:button name='No' label='No' onclick='{!c.cancelClick}'/>
+                        <lightning:button variant="brand" name='Yes' label='Yes' onclick='{!c.clickYes}'/>
+                        </center>
+                  <!--  </footer>-->
+        
+        <aura:set attribute="else"> 
+              <br></br>  <br></br>  <br></br> <br></br>
+                    <center>
+                        <h1 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">This account is already reviewed by : </h1>
+                 
+               <br></br>
+            <h4 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"><b>{!v.mycolumns }</b></h4>  </center> <br></br>
+            <center> <lightning:button variant="brand" name='OK' label='OK' onclick='{!c.cancelClick}'/></center>
+              </aura:set>
+    </aura:if>
+     <aura:if isTrue="{!v.enable_review_content}">
+   <div class="slds-modal__content slds-p-around--medium">
+         <h3 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Thank for reviewing the account :</h3>
+         </div>
+         </aura:if>
+   
+       
+</aura:component>

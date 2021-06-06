@@ -1,0 +1,33 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="opportunitylineItemfetch">
+    <aura:handler name="init" value="{!this}" action="{!c.fetchOpportunityLineItems}"/>
+    <aura:attribute type="opportunitylineitem[]" name="opplinelist"/>
+    <div class="slds-grid">
+        
+        <table class="slds-table slds-table_cell-buffer">
+            <aura:iteration items="{!v.opplinelist}" var="row" indexVar="index">
+                <tr>
+                    <td>
+                        <b>Offering: </b>
+                        <b><ui:outputText value="{!row.Offering__c}"/></b>
+                    </td>
+                    
+                    <!--<td>
+                        <b>Offering Amount:</b>
+                        <b><ui:outputText value="{!row.Amount__c}"/></b>
+                    </td> -->
+                </tr>
+                <tr>
+                    <td>
+                        Service Line or Product:
+                        <ui:outputText value="{!row.Service_Line_or_Product__c}" />
+                    </td>      
+                
+                    <!--<td>
+                        Module or Accelerator:
+                        <ui:outputText value="{!row.Module_or_Accelerator2__c}"/>
+                    </td>-->
+                </tr>
+            </aura:iteration>
+        </table> 
+    </div>
+</aura:component>

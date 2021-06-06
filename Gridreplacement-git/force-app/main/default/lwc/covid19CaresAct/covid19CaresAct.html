@@ -1,0 +1,120 @@
+<template>
+    <lightning-card class="lightning-card">
+        <lightning-formatted-rich-text class="slds-align_absolute-center" slot="title" value={formTitle}></lightning-formatted-rich-text>
+        <div style="height:0px;" class="scriptsDiv" lwc:dom="manual"></div>
+        <template if:true={hasPrintURL}>
+            <iframe style="display:none" src={printIFrameURL} width="0px" height="0px"></iframe>
+        </template>
+        <template if:true={isLoading}>
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </template>
+        <div class="slds-p-left_medium slds-p-right_medium">
+            <lightning-formatted-rich-text value={globalHeader}></lightning-formatted-rich-text>
+            <template if:true={showErrorMessage}>
+                <span class="slds-text-color_destructive slds-text-body_small">{errorMessage}</span>
+            </template>
+            <!-- PAGE ONE - Email Lookup -->
+            <template if:true={isUserLookup}>
+                <lightning-formatted-rich-text value={userLookupHeading}></lightning-formatted-rich-text>
+                <br/>
+                <lightning-record-edit-form class="boldLabel" object-api-name="Lead" data-id="userLookupInformation" onsubmit={handleUserLookupSubmit}>
+                    <lightning-messages></lightning-messages>
+                        <lightning-input-field data-object="userLookupRecord" required field-name="Email" value={userLookupRecord.Email} onchange={handleFieldChange}></lightning-input-field>
+                        <lightning-button class="slds-hide" type="submit" data-id="userLookupSubmit" disabled={isLoading}></lightning-button>
+                        <lightning-input data-object="userLookupRecord" type="checkbox" data-id="agreeDisclaimerUserLookup" label="I have read and agreed to Huron’s Privacy Statement and the disclaimer as presented below" checked={userLookupRecord.agreeDisclaimer} name="agreeDisclaimer" required onchange={handleCheckboxChange}></lightning-input>
+                </lightning-record-edit-form>
+            </template>
+            <!-- END PAGE ONE - Email Lookup -->
+            <!-- PAGE TWO - General Information -->
+            <template if:true={isGeneralInformation}>
+                <lightning-formatted-rich-text value={generalInformationHeading}></lightning-formatted-rich-text>
+                <br/>
+                <lightning-record-edit-form class="boldLabel" object-api-name="COVID_19_Submission__c" record-id={submissionRecord.Id} data-id="generalInformation" onsuccess={handleGeneralSuccess} onsubmit={handleGeneralSubmit}>
+                    <lightning-messages></lightning-messages>
+                    <template for:each={generalInformationFields} for:item="field">
+                        <template if:true={field.hasHelpText}>
+                            <lightning-formatted-rich-text class="slds-text-body_small" key={field.fieldPath} value={field.helpText}></lightning-formatted-rich-text>
+                        </template>
+                        <lightning-input-field key={field.fieldPath} data-object="submissionRecord" field-name={field.fieldPath} value={field.value} onchange={handleFieldChange} required={field.required}></lightning-input-field>
+                    </template>
+                    <lightning-input data-object="submissionRecord" type="checkbox" data-id="agreeDisclaimer" label="I have read and understand Huron’s disclaimer as presented below." checked={submissionRecord.agreeDisclaimer} name="agreeDisclaimer" required onchange={handleCheckboxChange}></lightning-input>
+                    <lightning-button class="slds-hide" type="submit" data-id="generalSubmit" disabled={isLoading}></lightning-button>
+                </lightning-record-edit-form>
+            </template>
+            <!-- END PAGE TWO - General Information -->
+            <!-- PAGE THREE - Lead Information -->
+            <template if:true={isLeadInformation}>
+                <lightning-formatted-rich-text value={leadInformationHeading}></lightning-formatted-rich-text>
+                <br/>
+                <lightning-record-edit-form object-api-name="Lead" data-id="leadInformation" onsuccess={handleLeadSuccess} onsubmit={handleLeadSubmit}>
+                    <lightning-messages></lightning-messages>
+                    <template for:each={leadInformationFields} for:item="field">
+                        <template if:true={field.hasHelpText}>
+                            <lightning-formatted-rich-text class="slds-text-body_small" key={field.fieldPath} value={field.helpText}></lightning-formatted-rich-text>
+                        </template>
+                        <lightning-input-field key={field.fieldPath} data-object="leadRecord" field-name={field.fieldPath} value={field.value} onchange={handleFieldChange} required={field.required}></lightning-input-field>
+                    </template>
+                    <lightning-input data-object="leadRecord" type="checkbox" data-id="agreeDisclaimerLead" label="I have read and agreed to Huron’s Privacy Statement and the disclaimer as presented below" checked={leadRecord.agreeDisclaimer} name="agreeDisclaimer" required onchange={handleCheckboxChange}></lightning-input>
+                    <lightning-button class="slds-hide" type="submit" data-id="leadSubmit" disabled={isLoading}></lightning-button>
+                </lightning-record-edit-form>
+            </template>
+            <!-- END PAGE THREE - Lead Information -->
+            <!-- PAGE FOUR - Results -->
+            <template if:true={isResultsPage}>
+                <div class="printVisible">
+                    <lightning-formatted-rich-text value={resultsHeading}></lightning-formatted-rich-text>
+                    <br/>
+                    <div style="height:500px;" class="resultsTableDiv" lwc:dom="manual">
+                      <!-- <lightning-datatable data-recordid="id" wrap-text-max-lines="10" key-field="id" data={reliefItems} columns={reliefColumns} hide-checkbox-column=true onrowaction={handleResultsAction} min-column-width={minColumnWidth}></lightning-datatable> --> 
+                      
+                    </div>
+                </div>
+                <!-- <lightning-button class="slds-p-left_small slds-p-top_small" label="Print Results" variant="brand" onclick={printResults}></lightning-button> -->
+                <template if:true={hasPardotURL}>
+                    <div style="visibility: hidden;">
+                        <iframe src={pardotURL} width="1" height="1"></iframe>
+                    </div>
+                </template>
+            </template>
+            <!-- END PAGE FOUR - Results -->
+            <!-- PAGE FIVE - More Information -->
+            <template if:true={isClickInPage}>
+                <lightning-record-view-form record-id={moreInforomationId} object-api-name="COVID_19_Relief_Item__c">
+                    <template for:each={moreInfoColumns} for:item="field">
+                        <lightning-output-field key={field.fieldPath} field-name={field.fieldPath} ></lightning-output-field>
+                    </template>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <span class="slds-form-element__label"><a target="_blank" href={keyDefinitionsLink}>{keyDefinitionsLabel}</a></span>
+                    </div>
+                </lightning-record-view-form>
+            </template>
+            <!-- END PAGE FIVE - More Information -->
+        </div>
+        <div slot="footer">
+            <lightning-layout multiple-rows=true>
+                <lightning-layout-item size=12>
+                    <div class="slds-float_right">
+                        <template if:false={isFirstPage}>
+                            <lightning-button label={previousButtonText} variant="brand" class="slds-m-right_small" onclick={previousPage} disabled={isLoading}></lightning-button>
+                        </template>
+                        <template if:false={isLastPage}>
+                            <lightning-button label={nextButtonText} variant="brand" onclick={nextPage} disabled={isLoading}></lightning-button>
+                        </template>
+                        <!-- <lightning-button label="Last" variant="brand" onclick={goToLast} disabled={isLoading}></lightning-button> -->
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size=12>
+                    <template if:true={isUserLookup}>
+                        <lightning-formatted-rich-text value={userLookupFooter}></lightning-formatted-rich-text>
+                    </template>
+                    <template if:true={isGeneralInformation}>
+                        <lightning-formatted-rich-text value={generalInformationFooter}></lightning-formatted-rich-text>
+                    </template>
+                    <template if:true={isLeadInformation}>
+                        <lightning-formatted-rich-text value={leadInformationFooter}></lightning-formatted-rich-text>
+                    </template>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </lightning-card>
+</template>

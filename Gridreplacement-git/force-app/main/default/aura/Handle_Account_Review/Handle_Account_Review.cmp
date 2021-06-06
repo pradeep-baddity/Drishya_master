@@ -1,0 +1,5 @@
+<aura:component >
+ <aura:handler name="componentEventFired" event="c:Account_Review_Result" action="{!c.handleEvent}"></aura:handler> <!-- Handler for custom event -->
+    <aura:attribute name="ParentAttribute" type="String" default="”"></aura:attribute> <!-- Attribute of parent component -->
+    The ValueOf Attribute is {!v.ParentAttribute}	
+</aura:component>

@@ -1,0 +1,26 @@
+<apex:page showHeader="false" sidebar="false">
+  <style> 
+    #customers { font-family:"Arial"; border:1px solid #e0e3e5; }
+    #customers th { border-bottom:1px solid #e0e3e5; background-color:#008080; color:#ffffff; font-weight:bold; text-align:left; } 
+    #customers td { border-bottom:1px solid #cccccc; background-color:#eeeeee; } 
+    #customers td.alt { background-color:#ffffff; } 
+</style> 
+<table id="customers" border="0" cellspacing="0" cellpadding="2" width="100%"> 
+    <tbody>
+        <tr> 
+            <th>Territories</th> 
+            <th>Abbreviation</th> 
+        </tr> 
+        <tr><td>Ontario</td><td>ON</td></tr>
+        <tr><td class="alt">Quebec</td><td class="alt">QC</td></tr>
+        <tr><td>Nova Scotia</td><td>NS</td></tr>
+        <tr><td class="alt">New Brunswick</td><td class="alt">NB</td></tr>
+        <tr><td>Manitoba</td><td>MB</td></tr>
+        <tr><td class="alt">British Columbia</td><td class="alt">BC</td></tr>
+        <tr><td>Prince Edward Island</td><td>PE</td></tr>
+        <tr><td class="alt">Saskatchewan</td><td class="alt">SK</td></tr>
+        <tr><td>Alberta</td><td>AB</td></tr>
+        <tr><td class="alt">Newfoundland<br></br>and Labrador</td><td class="alt">NL</td></tr>        
+    </tbody> 
+</table>
+</apex:page>

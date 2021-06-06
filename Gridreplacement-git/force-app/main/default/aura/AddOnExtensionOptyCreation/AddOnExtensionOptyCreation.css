@@ -1,0 +1,15 @@
+.THIS .displayInline{
+    display:inline-flex;
+}
+
+.THIS .marginTop{
+    margin-top:-10%;
+}
+
+.THIS .slds-required{
+    display:none !important;
+}
+.THIS .slds-spinner_container {
+       top: 180px;
+    bottom: 180px;
+}

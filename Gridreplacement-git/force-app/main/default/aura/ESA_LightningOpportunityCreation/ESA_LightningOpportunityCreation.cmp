@@ -1,0 +1,91 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" controller="getESAOpportunityPicklistController" >
+    <aura:attribute name="OpportunityRec" type="Opportunity" 
+                    default="{ 'sobjectType': 'Opportunity' }"/>
+    <aura:attribute name="stageOptions" type="Object[]"  />
+    <aura:attribute name="TypeOptions" type="Object[]" />
+    <aura:attribute name="IndustryOptions" type="Object[]" />
+    <aura:attribute name="Regionoptions" type="Object[]" />
+    <aura:attribute name="PrimaryReasonWonoptions" type="Object[]" />
+    <aura:attribute name="PrimaryReasonLostoptions" type="Object[]" />
+    <aura:attribute name="lsalssoptionstoptions" type="Object[]" />
+    <aura:attribute name="leadsourceoptions" type="Object[]" />
+    <aura:attribute name="ProposalFeedbackReceivedoptions" type="Object[]" />
+    <aura:attribute name="BDMRoleoptions" type="Object[]" />
+    <aura:attribute name="CurrencyOptions" type="Object[]" />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="accName" type="string" />
+    <aura:attribute name="accMSA" type="Boolean" />
+    <aura:attribute name="OwnerName" type="string" />
+   
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.OpportunityRec}" action="{!c.handleValueChange}"/>
+    
+    
+    <div class="slds-col modal-header slds-modal__header">
+        <h2 class="title slds-text-heading--medium">New Opportunity</h2>
+    </div>
+    <!--<aura:if isTrue="{!v.accMSA}">
+        <div class="slds-m-top_small">
+        
+        <ui:message severity="warning" closable="true">
+            Please be advised that there is an active MSA with this Account. See the details on the Account page.
+        </ui:message>
+      </div>  
+    </aura:if> -->
+    <div>
+        <div class="slds-page-header">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <p style="text-align: left" class=" slds-line-height_reset">Opportunity Information</p>
+                </div>
+            </div>
+        </div>
+        
+        <table class="slds-table slds-table_cell-buffer slds-Ratecardtable">
+            <tr>
+                <td><span style="color:red">*</span>Opportunity Name<br></br>
+                    <!--<lightning:input aura:id="oppName" name="Opportunity Name"  value="{!v.OpportunityRec.Name}" label="Opportunity Name"  />
+                    -->
+                    <force:inputField aura:id="oppName" value="{!v.OpportunityRec.Name}" />
+                    <p class="slds-hide" aura:id="oppNameReq" style="color:red"> Error:It is a required field</p>
+                    
+                </td>
+            </tr>
+            <tr>
+                
+                
+                <td><span style="color:red">*</span>Estimated Opportunity Close Date<br></br>
+                    <!-- <lightning:input  type="date" aura:id="dat" name="Estimated Opportunity Close Date "  value="{!v.OpportunityRec.CloseDate}" label="Estimated Opportunity Close Date"/>
+                    -->
+                    <force:inputField aura:id="dat" value="{!v.OpportunityRec.CloseDate}" />
+                    <p class="slds-hide" aura:id="dateReq" style="color:red"> Error:It is a required field</p>
+                </td>	
+            </tr>
+            <tr>
+                
+                <td >
+                    <span style="color:red">*</span>Amount<br></br>
+                    <force:inputField aura:id="amount" required="true" value="{!v.OpportunityRec.Amount}" />
+                    <p class="slds-hide" aura:id="amountReq" style="color:red"> Error:It is a required field</p>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>
+                    <span style="color:red">*</span>Currency<br></br>
+                    <ui:inputSelect class="dynamic" aura:id="InputCurrency" change="{!c.onPicklistChange}"/>
+                    <p class="slds-hide" aura:id="currencyreq" style="color:red"> Error:It is a required field</p>
+                </td>
+                
+            </tr>
+        </table> 
+    </div>
+    <div align="middle" draggable="false">
+        <div class="slds-col modal-footer "> 
+            <lightning:button variant="brand" label="Save" onclick="{!c.saveingOpportunity}"/>
+            <lightning:button variant="brand" label="Cancel" onclick="{!c.cancelClick}"/>
+        </div> 
+    </div>
+    
+    
+</aura:component>

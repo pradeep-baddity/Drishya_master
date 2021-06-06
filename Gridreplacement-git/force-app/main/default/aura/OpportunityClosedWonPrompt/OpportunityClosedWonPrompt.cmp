@@ -1,0 +1,53 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute type="Opportunity" name="OpportunityRecord" />
+    <aura:attribute type="String" name="field" />
+    <aura:attribute name="showModal" type="Boolean" default="false" />
+    <aura:attribute name="RecordTypeID" type="Id" />
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <lightning:quickActionAPI aura:id="quickActionAPI" />
+    
+    <aura:attribute name="OpportunityRec" type="Opportunity" 
+                    default="{ 'sobjectType': 'Opportunity','Name':'','StageName':'' }"/>
+    
+    
+
+    <aura:handler event="force:refreshView" action="{!c.refreshHandler}"/>
+    
+    <div>
+    <force:recordData aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        fields="StageName"             
+        targetFields="{!v.OpportunityRecord}"
+        recordUpdated="{!c.refreshHandler}"/>
+    </div>
+    <aura:if isTrue="{!v.showModal}">
+        <div class="slds-m-around--xx-large">
+            
+            <!--Modal Box Start-->
+            <div role="dialog" class="slds-modal slds-fade-in-open ">
+                <div aura:id="MainDiv" class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.handleCloseModal}">
+                            X
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h1 class="slds-text-heading--medium"></h1>
+                    </div>
+                    
+                    <!--Modal Box Header-->                  
+                    <div class="modal-body scrollable slds-modal__content slds-p-around--medium">
+                        <div class="slds-text-align--center">
+                            Please validate your Monthly Revenue Projections in the Schedules tab.
+                        </div>
+                    </div>
+                    <!--Modal Box Button-->
+                    <div class="slds-modal__footer">
+                        <lightning:button class="slds-button slds-button--neutral uiButton forceActionButton" variant="Neutral" label="OK" onclick="{!c.handleCloseModal}"/>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>            
+        </div>
+    </aura:if>
+</aura:component>
